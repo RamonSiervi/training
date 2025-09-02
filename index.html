@@ -1,53 +1,136 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MFIT v21</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MFIT v16 • Glass Mobile</title>
+<link rel="icon" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/svgs/solid/dumbbell.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script defer src="script.js"></script>
 </head>
 <body>
-  <aside class="sidebar">
-    <div class="logo">MFIT</div>
-    <nav>
-      <button class="nav-btn" id="btnHome" title="Treinos"><i class="fa-solid fa-dumbbell"></i></button>
-      <button class="nav-btn" id="btnPDF" title="Exportar PDF"><i class="fa-regular fa-file-pdf"></i></button>
-      <button class="nav-btn" id="btnReset" title="Resetar Concluídos"><i class="fa-solid fa-rotate-right"></i></button>
-      <button class="nav-btn" id="btnUpload" title="Enviar Foto"><i class="fa-solid fa-camera"></i></button>
-      <button class="nav-btn" id="btnTheme" title="Trocar Tema"><i class="fa-solid fa-circle-half-stroke"></i></button>
-      <button class="nav-btn" id="btnSearch" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </nav>
-  </aside>
-
-  <main>
-    <header></header>
-
-    <div class="search-overlay" id="searchOverlay">
-      <input type="text" id="searchInput" placeholder="Buscar exercício..." autofocus>
-      <button id="closeSearch" class="icon-btn" title="Fechar"><i class="fa-solid fa-xmark"></i></button>
+  <header class="app-header glass">
+    <div class="brand">
+      <div class="logo"><i class="fa-solid fa-dumbbell"></i></div>
+      <div class="brand-text">
+        <div class="kicker">MFIT • v16</div>
+        <h1>Treinos • Glass Mobile</h1>
+      </div>
     </div>
+    <div class="toolbar">
+      <div class="row wrap-left">
+        <button id="btnTheme" class="btn" title="Alternar tema"><i class="fa-solid fa-moon"></i></button>
+        <button id="btnCompact" class="btn" title="Modo compacto"><i class="fa-solid fa-list-ul"></i></button>
+        <button id="btnExportPDF" class="btn primary" title="Exportar PDF (texto)"><i class="fa-solid fa-file-pdf"></i></button>
+        <button id="btnExportCSV" class="btn" title="Exportar CSV"><i class="fa-solid fa-file-csv"></i></button>
+        <button id="btnUpload" class="btn" title="Enviar foto"><i class="fa-solid fa-upload"></i></button>
+        <button id="btnReset" class="btn" title="Resetar progresso"><i class="fa-solid fa-rotate-right"></i></button>
+      </div>
 
-    <section id="treinosContainer"></section>
-  </main>
+      <!-- Resumo compacto (badges) -->
+      <div class="row badges" id="miniSummary">
+        <span class="pill"><i class="fa-solid fa-check"></i><span id="bDone">0</span></span>
+        <span class="pill"><i class="fa-solid fa-stopwatch"></i><span id="bTime">0m 0s</span></span>
+        <span class="pill"><i class="fa-solid fa-trophy"></i><span id="bPoints">0</span></span>
+      </div>
 
-  <!-- Modal Upload -->
-  <div class="modal" id="uploadModal" aria-hidden="true">
-    <div class="modal-content">
-      <button class="close" id="closeUpload" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
-      <h2><i class="fa-solid fa-paperclip"></i> Enviar Foto + Observação</h2>
-      <form action="https://formspree.io/f/mzzavnrq" method="POST" enctype="multipart/form-data">
-        <label class="file">
-          <i class="fa-solid fa-image"></i>
-          <input type="file" name="photo" accept="image/*" required>
-          <span>Selecionar imagem</span>
-        </label>
-        <textarea name="message" placeholder="Observação (opcional)"></textarea>
-        <button type="submit" class="primary"><i class="fa-regular fa-paper-plane"></i> Enviar</button>
-      </form>
+      <div class="row search-row">
+        <div class="search" id="searchBar" title="Buscar exercício">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" type="search" placeholder="Buscar..." autocomplete="off"/>
+        </div>
+        <button id="btnOpenSearchMobile" class="btn only-mobile" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Overlay de busca (mobile) -->
+  <div id="searchOverlay" class="overlay hidden">
+    <div class="overlay-inner glass">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="searchInputOverlay" type="search" placeholder="Buscar exercícios..." autocomplete="off" autofocus />
+      <button id="closeSearch" class="close">×</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <main id="app" class="container"></main>
+
+  <!-- Timer Widget fixo -->
+  <div id="timerWidget" class="timer-widget glass hidden">
+    <div class="tw-left">
+      <i class="fa-solid fa-stopwatch"></i>
+      <span id="twName">Timer</span>
+    </div>
+    <div class="tw-center">
+      <span id="twTime">00:00</span>
+    </div>
+    <div class="tw-right">
+      <button id="twPause" class="btn sm"><i class="fa-solid fa-pause"></i></button>
+      <button id="twStop" class="btn sm"><i class="fa-solid fa-xmark"></i></button>
+      <button id="twDone" class="btn sm primary"><i class="fa-solid fa-check"></i></button>
+    </div>
+  </div>
+
+  <!-- FAB + Menu -->
+  <button id="fab" class="fab glass"><i class="fa-solid fa-plus"></i></button>
+  <div id="fabMenu" class="fab-menu glass hidden">
+    <button class="fab-item" id="fabFavoriteAll"><i class="fa-solid fa-star"></i> Favoritar visíveis</button>
+    <button class="fab-item" id="fabReset"><i class="fa-solid fa-rotate-right"></i> Resetar progresso</button>
+    <button class="fab-item" id="fabNotes"><i class="fa-solid fa-note-sticky"></i> Adicionar observação</button>
+  </div>
+
+  <!-- Bottom Navigation (mobile) -->
+  <nav id="bottomNav" class="bottom-nav glass">
+    <button data-tab="all" class="active"><i class="fa-solid fa-dumbbell"></i><span>Treinos</span></button>
+    <button data-tab="fav"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
+    <button data-tab="config"><i class="fa-solid fa-gear"></i><span>Config</span></button>
+  </nav>
+
+  <footer class="app-footer">
+    <small id="footerInfo">Carregando...</small>
+  </footer>
+
+  <!-- Modal Upload -->
+  <div id="uploadModal" class="modal hidden" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal-content glass" role="document">
+      <button id="closeModal" class="close" aria-label="Fechar">×</button>
+      <h2>Enviar Foto</h2>
+      <form id="uploadForm">
+        <label>Observação:</label>
+        <textarea name="observacao" placeholder="Ex.: Ajustar carga no leg press" required></textarea>
+        <label>Foto:</label>
+        <input type="file" name="foto" accept="image/*" required />
+        <button type="submit" class="btn primary full">Enviar</button>
+      </form>
+      <div id="uploadStatus"></div>
+    </div>
+  </div>
+
+  <!-- Modal Reset -->
+  <div id="resetModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-content glass">
+      <h2>Resetar progresso?</h2>
+      <p>Isso apaga todos os <strong>concluídos</strong>, <strong>favoritos</strong> e <strong>histórico diário</strong>.</p>
+      <div class="row" style="justify-content:flex-end;gap:10px;margin-top:6px">
+        <button id="cancelReset" class="btn">Cancelar</button>
+        <button id="confirmReset" class="btn primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup de conclusão -->
+  <div id="donePopup" class="done-popup hidden glass">
+    <i class="fa-solid fa-circle-check"></i>
+    <div>
+      <strong>Treino concluído!</strong>
+      <div class="small" id="donePopupText">Bom trabalho 💪</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast hidden">Ok</div>
 </body>
 </html>
