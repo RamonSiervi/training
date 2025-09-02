@@ -1,0 +1,123 @@
+:root {
+  --bg: rgba(255,255,255,0.6);
+  --card-bg: rgba(255,255,255,0.3);
+  --text: #111;
+  --blur: 10px;
+  --radius: 18px;
+  --transition: 0.25s ease-in-out;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: var(--text);
+  display: flex;
+}
+
+.sidebar {
+  width: 70px;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--blur));
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar .logo {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  margin: 10px 0;
+  font-size: 1.2rem;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.nav-btn:hover {
+  transform: scale(1.2);
+}
+
+main {
+  flex: 1;
+  padding: 1rem;
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.search-overlay {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 60px;
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--blur));
+  padding: 8px;
+  border-radius: var(--radius);
+}
+.search-overlay input {
+  border: none;
+  padding: 6px;
+  width: 200px;
+}
+
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--blur));
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: var(--transition);
+}
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.meta {
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.timer-balloon {
+  background: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  background: var(--bg);
+  padding: 20px;
+  border-radius: var(--radius);
+  max-width: 400px;
+  width: 100%;
+}
+.close {
+  float: right;
+  cursor: pointer;
+}

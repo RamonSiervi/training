@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MFIT v21</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="logo">MFIT</div>
+    <nav>
+      <button class="nav-btn" id="btnHome" title="Treinos"><i class="fa-solid fa-dumbbell"></i></button>
+      <button class="nav-btn" id="btnPDF" title="Exportar PDF"><i class="fa-regular fa-file-pdf"></i></button>
+      <button class="nav-btn" id="btnReset" title="Resetar Concluídos"><i class="fa-solid fa-rotate-right"></i></button>
+      <button class="nav-btn" id="btnUpload" title="Enviar Foto"><i class="fa-solid fa-camera"></i></button>
+      <button class="nav-btn" id="btnTheme" title="Trocar Tema"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    </nav>
+  </aside>
+
+  <main>
+    <header>
+      <button id="btnSearch" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+      <div class="search-overlay" id="searchOverlay">
+        <input type="text" id="searchInput" placeholder="Buscar exercício...">
+      </div>
+    </header>
+
+    <section id="treinosContainer"></section>
+  </main>
+
+  <!-- Modal Upload -->
+  <div class="modal" id="uploadModal">
+    <div class="modal-content">
+      <span class="close" id="closeUpload">&times;</span>
+      <h2>Enviar Foto + Observação</h2>
+      <form action="https://formspree.io/f/mzzavnrq" method="POST" enctype="multipart/form-data">
+        <input type="file" name="photo" accept="image/*" required>
+        <textarea name="message" placeholder="Sua observação..."></textarea>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
