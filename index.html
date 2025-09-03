@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PERSONAL — Preview</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    /* paleta suave */
+    --ink:#0c1024; --ink-2:#66709a;
+    --bg1:#f6f8ff; --bg2:#ffffff;
+    --blur:18px; --r:18px; --tr:.35s cubic-bezier(.2,.9,.2,1);
+    --line:rgba(15,25,55,.10);
+    --glass:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,.45));
+    /* dark */
+    --inkD:#eaf0ff; --ink-2D:#a8b3da;
+    --bg1D:#0c132e; --bg2D:#0a1228;
+    --glassD:linear-gradient(180deg,rgba(20,28,60,.72),rgba(20,28,60,.52));
+    --lineD:rgba(255,255,255,.16);
+
+    /* tons suaves para seções */
+    --tone-quad: rgba(64,127,255,.10);
+    --tone-post: rgba(28,196,133,.10);
+    --tone-upper: rgba(168,96,255,.10);
+    --tone-back: rgba(255,158,61,.10);
+  }
+  html,body{height:100%}
+  body{
+    margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at -10% -10%, var(--bg1) 0%, var(--bg2) 50%) fixed,
+      radial-gradient(900px 600px at 110% 10%, var(--bg1) 0%, var(--bg2) 70%) fixed;
+    transition:background var(--tr), color var(--tr);
+  }
+  body.dark{
+    color:var(--inkD);
+    background:
+      radial-gradient(1200px 600px at -10% -10%, var(--bg1D) 0%, var(--bg2D) 50%) fixed,
+      radial-gradient(900px 600px at 110% 10%, var(--bg1D) 0%, var(--bg2D) 70%) fixed;
+  }
+  .glass{background:var(--glass); border:1px solid var(--line); backdrop-filter:blur(var(--blur)); transition:background var(--tr),border-color var(--tr)}
+  body.dark .glass{background:var(--glassD); border-color:var(--lineD)}
+
+  .wrap{max-width:1060px;margin:0 auto;padding:14px 14px 80px}
+
+  /* header */
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{font-weight:900;letter-spacing:.2px}
+  .actions{display:flex;gap:10px}
+  .gbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+  .chip{padding:8px 12px;border-radius:999px;font-size:12px}
+
+  /* weather */
+  .weather{display:flex;align-items:center;gap:14px;border-radius:20px;padding:12px 14px;margin:10px 0}
+  .w-temp{font-size:28px;font-weight:800}
+  .w-row{display:flex;gap:10px;align-items:center;color:var(--ink-2)}
+  body.dark .w-row{color:var(--ink-2D)}
+
+  /* spotlight search */
+  .spot{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity var(--tr);z-index:40}
+  .spot.on{opacity:1;pointer-events:auto}
+  .spot-panel{width:min(92vw,720px);padding:14px;border-radius:18px;display:grid;gap:10px}
+  .spot-input{height:56px;font-size:18px;border:none;outline:none;border-radius:12px;padding:0 14px}
+
+  /* seção (accordion) */
+  .section{border-radius:22px;margin:14px 0;overflow:hidden}
+  .section[data-tone="quad"]{box-shadow:0 10px 24px rgba(64,127,255,.06); background:linear-gradient(0deg, var(--tone-quad), var(--tone-quad)), transparent}
+  .section[data-tone="post"]{box-shadow:0 10px 24px rgba(28,196,133,.06); background:linear-gradient(0deg, var(--tone-post), var(--tone-post)), transparent}
+  .section[data-tone="upper"]{box-shadow:0 10px 24px rgba(168,96,255,.06); background:linear-gradient(0deg, var(--tone-upper), var(--tone-upper)), transparent}
+  .section[data-tone="back"]{box-shadow:0 10px 24px rgba(255,158,61,.09); background:linear-gradient(0deg, var(--tone-back), var(--tone-back)), transparent}
+
+  .s-head{display:flex;align-items:center;justify-content:space-between;padding:12px}
+  .s-title{display:flex;align-items:center;gap:10px;margin:0;font-weight:900}
+  .s-toggle{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;transition:transform var(--tr)}
+  .s-toggle i{transition:transform var(--tr)}
+  .section.collapsed .s-toggle i{transform:rotate(180deg)} /* +/– invertido */
+
+  .s-body{padding:0 12px 12px;max-height:1200px;opacity:1;transform:none;transition:max-height .6s var(--tr),opacity var(--tr),transform var(--tr)}
+  .section.collapsed .s-body{max-height:0;opacity:0;transform:translateY(-6px)}
+
+  /* cards */
+  .grid{display:grid;gap:12px}
+  @media(min-width:880px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .card{border-radius:16px;overflow:hidden}
+  .card .inner{padding:12px}
+  .title{margin:0 0 6px;font-weight:800}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--ink-2)}
+  body.dark .row{color:var(--ink-2D)}
+  .pill{padding:6px 10px;border-radius:999px;font-size:12px}
+  .icon-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer}
+  .video{border-top:1px dashed var(--line);padding:10px}
+  body.dark .video{border-top:1px dashed var(--lineD)}
+  video{width:100%;border-radius:12px}
+
+  /* timer inline (super clean) */
+  .timer-inline{display:flex;align-items:center;gap:6px;margin-left:auto}
+  .t-badge{min-width:56px;text-align:center;font-weight:800}
+</style>
+</head>
+<body>
+  <header class="top glass">
+    <div class="brand">
+      <span class="logo chip glass">PERSONAL</span>
+    </div>
+    <div class="actions">
+      <button id="themeBtn" class="gbtn glass" title="Tema"><i class="fa-solid fa-moon"></i></button>
+      <button id="spotBtn" class="gbtn glass" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- WEATHER -->
+    <section class="weather glass" id="weather">
+      <div class="w-temp" id="wTemp">--°</div>
+      <div>
+        <div style="font-weight:800">Salvador, BR</div>
+        <div class="w-row"><i class="fa-solid fa-cloud-sun"></i><span id="wDesc">Carregando…</span> • <span id="wHL">—/—°</span></div>
+      </div>
+      <div class="chip glass" style="margin-left:auto" id="wUpdate"><i class="fa-solid fa-rotate"></i> atualizar</div>
+    </section>
+
+    <!-- SEÇÃO (preview) -->
+    <section class="section glass collapsed" id="sec-quads" data-tone="quad">
+      <div class="s-head">
+        <h3 class="s-title"><i class="fa-solid fa-dumbbell"></i> Treino de Quadríceps</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="chip glass" style="font-weight:700">8 exercícios</span>
+          <button class="s-toggle gbtn glass" data-sec="quads" title="Abrir/fechar"><i class="fa-solid fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="s-body">
+        <div class="grid" id="grid-quads">
+          <!-- cards renderizados já prontos -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Spotlight -->
+  <div class="spot" id="spot">
+    <div class="spot-panel glass">
+      <input id="spotInput" class="spot-input glass" placeholder="Buscar exercícios…"/>
+      <div class="row" style="padding:0 6px 6px">Pressione ESC para fechar</div>
+    </div>
+  </div>
+
+<script>
+/* ========= CONFIG CLIMA =========
+   👉 Pegue sua chave gratuita no OpenWeather e cole abaixo
+   https://openweathermap.org/api
+*/
+const OPENWEATHER_API_KEY = "COLE_SUA_CHAVE_AQUI";
+
+/* ========= TEMA ========= */
+const themeBtn = document.getElementById('themeBtn');
+function setTheme(d){ document.body.classList.toggle('dark', d); themeBtn.innerHTML = d?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>'; localStorage.setItem('theme', d?'dark':'light'); }
+setTheme(localStorage.getItem('theme')==='dark');
+themeBtn.onclick = ()=> setTheme(!document.body.classList.contains('dark'));
+
+/* ========= SPOTLIGHT ========= */
+const spot = document.getElementById('spot'); const spotBtn = document.getElementById('spotBtn'); const spotInput = document.getElementById('spotInput');
+spotBtn.onclick = ()=>{ spot.classList.add('on'); setTimeout(()=>spotInput.focus(),10); };
+spot.onclick = e=>{ if(e.target===spot) spot.classList.remove('on'); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') spot.classList.remove('on'); });
+
+/* ========= DATA (somente Quadríceps no preview) ========= */
+const QUADS = [
+  {name:'Agachamento Sumô com Halteres',series:'3×10/10/10 (Drop — 1 série)',carga:'0 kg',intervalo:60,video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4'},
+  {name:'Leg Press 45°',series:'4×15 (pés colados) + 15 (afastados)',carga:'12 kg',intervalo:40,video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-leg-press-front.mp4'}
+];
+
+/* ========= RENDER CARDS ========= */
+const gridQ = document.getElementById('grid-quads');
+gridQ.innerHTML = QUADS.map((it,i)=>cardTemplate(it,i)).join('');
+bindCardTimers();
+
+function cardTemplate(it,i){
+  return `
+  <article class="card glass">
+    <div class="inner">
+      <h4 class="title">${it.name}</h4>
+      <div class="row">
+        <span class="pill glass"><i class="fa-solid fa-dumbbell"></i> ${it.series}</span>
+        <span class="pill glass"><i class="fa-solid fa-weight-hanging"></i> ${it.carga}</span>
+        <div class="timer-inline">
+          <span class="pill glass t-badge" data-id="t-${i}">${fmt(it.intervalo)}</span>
+          <button class="icon-btn glass t-play" data-id="${i}" title="Iniciar/Pausar"><i class="fa-solid fa-play"></i></button>
+          <button class="icon-btn glass t-stop" data-id="${i}" title="Zerar"><i class="fa-solid fa-stop"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="video"><video preload="metadata" src="${it.video}" controls playsinline></video></div>
+  </article>`;
+}
+
+/* ========= TIMER INLINE (por card) ========= */
+let timers = {};
+function bindCardTimers(){
+  document.querySelectorAll('.t-play').forEach(btn=>{
+    btn.onclick = ()=>{
+      const id = btn.dataset.id;
+      if(!timers[id]) timers[id] = {left: QUADS[id].intervalo, tick:null, running:false};
+      const t = timers[id];
+      if(t.running){ clearInterval(t.tick); t.tick=null; t.running=false; btn.innerHTML='<i class="fa-solid fa-play"></i>'; }
+      else{
+        btn.innerHTML='<i class="fa-solid fa-pause"></i>';
+        t.running = true;
+        t.tick = setInterval(()=>{
+          t.left--; updateBadge(id);
+          if(t.left<=0){ clearInterval(t.tick); t.tick=null; t.running=false; t.left=0; btn.innerHTML='<i class="fa-solid fa-play"></i>'; lightPopup('Intervalo concluído ✅'); }
+        },1000);
+      }
+    };
+  });
+  document.querySelectorAll('.t-stop').forEach(btn=>{
+    btn.onclick = ()=>{
+      const id = btn.dataset.id;
+      if(!timers[id]) timers[id]={left:QUADS[id].intervalo};
+      timers[id].left = QUADS[id].intervalo;
+      if(timers[id].tick){ clearInterval(timers[id].tick); timers[id].tick=null; }
+      timers[id].running=false;
+      document.querySelector(`[data-id="t-${id}"]`).textContent = fmt(QUADS[id].intervalo);
+      document.querySelector(`.t-play[data-id="${id}"]`).innerHTML='<i class="fa-solid fa-play"></i>';
+    };
+  });
+}
+function updateBadge(id){
+  const t = timers[id];
+  const el = document.querySelector(`[data-id="t-${id}"]`);
+  if(el) el.textContent = fmt(t.left);
+}
+function fmt(s){ const m=String(Math.floor(s/60)).padStart(2,'0'); const ss=String(s%60).padStart(2,'0'); return `${m}:${ss}`; }
+function lightPopup(msg){
+  const x=document.createElement('div'); x.className='glass'; x.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);padding:14px 16px;border-radius:16px;z-index:60';
+  x.textContent=msg; document.body.appendChild(x); setTimeout(()=>x.remove(),1200);
+}
+
+/* ========= ACCORDION (começa fechado) ========= */
+document.querySelectorAll('.s-toggle').forEach(btn=>{
+  btn.onclick = ()=>{
+    const sec = document.getElementById('sec-'+btn.dataset.sec);
+    sec.classList.toggle('collapsed');
+    btn.innerHTML = sec.classList.contains('collapsed') ? '<i class="fa-solid fa-plus"></i>' : '<i class="fa-solid fa-minus"></i>';
+  };
+});
+
+/* ========= CLIMA (OpenWeather) ========= */
+async function loadWeather(){
+  const temp = document.getElementById('wTemp');
+  const desc = document.getElementById('wDesc');
+  const hl   = document.getElementById('wHL');
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=Salvador,BR&units=metric&lang=pt_br&appid=${OPENWEATHER_API_KEY}`;
+  try{
+    if(!OPENWEATHER_API_KEY || OPENWEATHER_API_KEY.startsWith('COLE_')) throw new Error('sem chave');
+    const r = await fetch(url); if(!r.ok) throw new Error('falha');
+    const j = await r.json();
+    temp.textContent = Math.round(j.main.temp) + '°';
+    desc.textContent = j.weather[0].description.replace(/^\w/, c=>c.toUpperCase());
+    hl.textContent   = Math.round(j.main.temp_min)+'° / '+Math.round(j.main.temp_max)+'°';
+  }catch(e){
+    // fallback mock
+    temp.textContent = '28°';
+    desc.textContent = 'Céu limpo (mock)';
+    hl.textContent   = '25° / 31°';
+  }
+}
+loadWeather();
+document.getElementById('wUpdate').onclick = loadWeather;
+</script>
+</body>
+</html>
