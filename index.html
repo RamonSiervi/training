@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PERSONAL — Treinos</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{
+    --r:18px; --blur:18px; --tr:.32s cubic-bezier(.2,.9,.2,1);
+    --ink:#0f1328; --ink2:#657096; --line:rgba(10,20,40,.12);
+    --g1:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,255,255,.4));
+    --bg: radial-gradient(1200px 600px at -10% -10%, #eef1ff 0%, #ffffff 55%) fixed,
+          radial-gradient(900px 600px at 110% 10%, #edf7ff 0%, #ffffff 70%) fixed;
+    /* dark */
+    --inkD:#e9eeff; --ink2D:#b7c2e6; --lineD:rgba(255,255,255,.18);
+    --g1D:linear-gradient(180deg,rgba(18,26,56,.7),rgba(18,26,56,.5));
+    --bgD: radial-gradient(1200px 600px at -10% -10%, #0f1530 0%, #0d1a39 45%, #0a1226 100%) fixed,
+           radial-gradient(900px 600px at 110% 10%, #1b2754 0%, #0b1633 70%, #0a1226 100%) fixed;
+    /* tones leves nos cards */
+    --toneA: radial-gradient(450px 200px at 95% -10%, #e6f0ff66, transparent 60%);
+    --toneB: radial-gradient(450px 200px at 95% -10%, #efe6ff66, transparent 60%);
+    --toneC: radial-gradient(450px 200px at 95% -10%, #fff0e066, transparent 60%);
+    --toneD: radial-gradient(450px 200px at 95% -10%, #e6ffe666, transparent 60%);
+  }
+  html,body{height:100%}
+  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--ink);transition:background var(--tr),color var(--tr)}
+  body.dark{background:var(--bgD);color:var(--inkD)}
+
+  /* util */
+  .glass{border:1px solid var(--line);background:var(--g1);backdrop-filter:blur(var(--blur));transition:background var(--tr),border-color var(--tr)}
+  body.dark .glass{border-color:var(--lineD);background:var(--g1D)}
+  .gbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+  .muted{opacity:.85}
+  .wrap{max-width:1040px;margin:0 auto;padding:14px 14px 110px}
+
+  /* Header */
+  .top{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px}
+  .bar-actions{display:flex;gap:10px}
+  .mini{display:flex;gap:8px}
+  .chip{padding:8px 12px;border-radius:999px;font-size:12px}
+
+  /* Spotlight Search */
+  .spot{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity var(--tr);z-index:50}
+  .spot.on{opacity:1;pointer-events:auto}
+  .spot-panel{width:min(92vw,720px);padding:14px;border-radius:16px;display:grid;gap:10px}
+  .spot-input{height:56px;font-size:18px;border:none;outline:none;border-radius:12px;padding:0 14px}
+
+  /* Bottom nav */
+  .bottom{position:fixed;inset:auto 14px 14px;display:flex;align-items:center;justify-content:space-around;height:58px;border-radius:18px;z-index:20}
+  .nav-item{background:none;border:none;color:inherit;font-size:20px}
+  .nav-item.active{transform:translateY(-2px) scale(1.06)}
+
+  /* Sections */
+  .section{border-radius:20px;overflow:hidden;margin:14px 0}
+  .s-head{display:flex;align-items:center;justify-content:space-between;padding:14px 12px}
+  .s-title{display:flex;align-items:center;gap:10px;margin:0;font-weight:800}
+  .s-toggle{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;transition:transform var(--tr)}
+  .section.collapsed .s-toggle i{transform:rotate(180deg)}
+  .s-body{padding:0 12px 12px;max-height:1200px;opacity:1;transform:none;transition:max-height .6s var(--tr),opacity var(--tr),transform var(--tr)}
+  .section.collapsed .s-body{max-height:0;opacity:0;transform:translateY(-6px)}
+
+  /* Cards */
+  .grid{display:grid;gap:12px}
+  @media(min-width:880px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .card{border-radius:16px;overflow:hidden;position:relative;animation:cardIn .45s ease both}
+  @keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .card-inner{padding:12px}
+  .title{margin:0 0 6px;font-weight:800}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--ink2)}
+  body.dark .row{color:var(--ink2D)}
+  .pill{padding:6px 10px;border-radius:999px;font-size:12px}
+  .act{display:flex;gap:6px;margin-left:auto}
+  .icon-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer}
+  .video{border-top:1px dashed var(--line);padding:10px}
+  body.dark .video{border-top:1px dashed var(--lineD)}
+  video{width:100%;border-radius:12px}
+  .fav{color:#f1b500}
+  .done{color:#2ecc71}
+  .pulse{animation:pulse 1s ease}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(0,0,0,.0)}70%{box-shadow:0 10px 24px rgba(0,0,0,.12)}100%{box-shadow:none}}
+
+  /* tones */
+  .tone-a{background:var(--g1),var(--toneA)}
+  .tone-b{background:var(--g1),var(--toneB)}
+  .tone-c{background:var(--g1),var(--toneC)}
+  .tone-d{background:var(--g1),var(--toneD)}
+  body.dark .tone-a,body.dark .tone-b,body.dark .tone-c,body.dark .tone-d{background:var(--g1D)}
+
+  /* Timer widget */
+  .timer{position:fixed;left:14px;right:14px;bottom:84px;border-radius:18px;padding:10px;display:flex;align-items:center;gap:10px;z-index:25}
+  .t-display{font-size:20px;font-weight:800;min-width:64px;text-align:center}
+  .t-ctrls{display:flex;gap:8px}
+  .t-presets{margin-left:auto;display:flex;gap:8px}
+
+  /* FAB */
+  .fab{position:fixed;right:18px;bottom:86px;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;z-index:26}
+  .fab-menu{position:fixed;right:18px;bottom:150px;display:grid;gap:8px;opacity:0;pointer-events:none;transform:translateY(8px);transition:var(--tr);z-index:26}
+  .fab.open + .fab-menu{opacity:1;pointer-events:auto;transform:none}
+  .fab-item{padding:10px 14px;border-radius:14px;display:flex;align-items:center;gap:8px}
+
+  /* Toast */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;padding:10px 14px;border-radius:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity var(--tr),transform var(--tr)}
+  .toast.on{opacity:1;transform:translate(-50%,-10px)}
+
+  /* Modal confirm */
+  .modal{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity var(--tr);z-index:55}
+  .modal.on{opacity:1;pointer-events:auto}
+  .panel{width:min(92vw,420px);padding:16px;border-radius:18px;display:grid;gap:12px}
+
+  /* Spotlight smaller screens tweak */
+  @media(min-width:880px){
+    .card .row{font-size:13px}
+    .card .title{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<header class="top glass">
+  <div class="brand">
+    <span class="chip glass">PERSONAL</span>
+  </div>
+  <div class="bar-actions mini">
+    <button id="themeBtn" class="gbtn glass" title="Tema"><i class="fa-solid fa-moon"></i></button>
+    <button id="spotBtn" class="gbtn glass" title="Buscar"><i class="fa-solid fa-magnifying-glass"></i></button>
+    <button id="uploadBtn" class="gbtn glass" title="Enviar foto"><i class="fa-solid fa-camera"></i></button>
+    <button id="resetBtn" class="gbtn glass" title="Resetar progresso"><i class="fa-solid fa-rotate"></i></button>
+  </div>
+</header>
+
+<main class="wrap" id="wrap"></main>
+
+<!-- TIMER -->
+<div class="timer glass" id="timer">
+  <span class="t-display" id="tDisplay">00:00</span>
+  <div class="t-ctrls">
+    <button class="gbtn glass" id="tStart" title="Iniciar"><i class="fa-solid fa-play"></i></button>
+    <button class="gbtn glass" id="tPause" title="Pausar"><i class="fa-solid fa-pause"></i></button>
+    <button class="gbtn glass" id="tStop" title="Parar"><i class="fa-solid fa-stop"></i></button>
+  </div>
+  <div class="t-presets">
+    <button class="chip glass t-preset" data-s="30">30s</button>
+    <button class="chip glass t-preset" data-s="40">40s</button>
+    <button class="chip glass t-preset" data-s="60">60s</button>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab gbtn glass" id="fab"><i class="fa-solid fa-plus"></i></button>
+<div class="fab-menu" id="fabMenu">
+  <div class="fab-item glass" id="favAll"><i class="fa-solid fa-star"></i> Favoritar todos</div>
+  <div class="fab-item glass" id="addNote"><i class="fa-solid fa-note-sticky"></i> Adicionar nota</div>
+  <div class="fab-item glass" id="openReset"><i class="fa-solid fa-rotate"></i> Resetar</div>
+</div>
+
+<!-- Spotlight Search -->
+<div class="spot" id="spot">
+  <div class="spot-panel glass">
+    <input id="spotInput" class="spot-input glass" placeholder="Buscar exercícios…"/>
+    <div class="row muted" style="padding:0 6px 6px">Pressione ESC para fechar</div>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<nav class="bottom glass">
+  <button class="nav-item active"><i class="fa-solid fa-house"></i></button>
+  <button class="nav-item"><i class="fa-solid fa-star"></i></button>
+</nav>
+
+<!-- Toast -->
+<div class="toast glass" id="toast"></div>
+
+<!-- Modal confirm reset -->
+<div class="modal" id="confirm">
+  <div class="panel glass">
+    <h3 style="margin:0">Resetar progresso?</h3>
+    <div class="muted">Isso vai limpar <b>concluídos</b> e <b>favoritos</b> salvos neste dispositivo.</div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="chip glass" id="cCancel">Cancelar</button>
+      <button class="chip glass" id="cOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========= Dados ========= */
+const DATA = [
+  { id:'quads', icon:'fa-dumbbell', title:'Treino de Quadríceps', tone:'tone-a', items:[
+    {tone:'tone-a',name:'Agachamento Sumô com Halteres',series:'3×10/10/10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4'},
+    {tone:'tone-b',name:'Leg Press 45°',series:'4×15 (pés colados) + 15 (afastados)',carga:'12 kg',intervalo:'40s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-leg-press-front.mp4'},
+    {tone:'tone-c',name:'Adução de Quadril Máquina',series:'3×10/10/10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-adduction-front.mp4'},
+    {tone:'tone-d',name:'Cadeira Flexora',series:'3×10/10/10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-seated-leg-curl-side.mp4'},
+    {tone:'tone-a',name:'Cadeira Flexora Unilateral',series:'3×10/10/10/10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Seated_Leg_Curl_FR_1080.mp4'},
+    {tone:'tone-b',name:'Panturrilha no Step',series:'4×15',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-calves-stretch-variation-3-side.mp4'},
+    {tone:'tone-c',name:'Abdominal Canivete',series:'4×15',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-suitcase-crunch-side.mp4'},
+    {tone:'tone-d',name:'Esteira Caminhada',series:'30 reps',carga:'—',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4'},
+  ]},
+  { id:'post', icon:'fa-person-walking', title:'Posterior & Glúteo', tone:'tone-b', items:[
+    {tone:'tone-a',name:'Agachamento com Halteres',series:'3×10+10+10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-rack-squat-side.mp4'},
+    {tone:'tone-b',name:'Abdução de Quadril Máquina',series:'3×10+10+10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-abduction-front.mp4'},
+    {tone:'tone-c',name:'Elíptico',series:'25 reps',carga:'0 kg',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-elliptical-side.mp4'},
+    {tone:'tone-d',name:'Afundo com Barra Livre',series:'3×12 • 3×10 • 2×8',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-lunge-side.mp4'},
+    {tone:'tone-a',name:'Agachamento Sumô no Step c/ Halteres',series:'3×10+10+10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/DB_Sumo_Squat_FR_1080.mp4'},
+    {tone:'tone-b',name:'Cadeira Extensora',series:'3×10+10+10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-machine-leg-extension-side.mp4'},
+    {tone:'tone-c',name:'Cadeira Extensora Unilateral',series:'3×10+10+10 (Drop — 1 série)',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Single_Leg_Extension_FR_1080.mp4'},
+    {tone:'tone-d',name:'Leg Press 45° Unilateral',series:'3×12 • 3×10 • 2×8',carga:'0 kg',intervalo:'60s',video:'https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Leg_Press_FR_1080.mp4'},
+  ]},
+  { id:'upper', icon:'fa-heart-pulse', title:'Peito, Tríceps & Bíceps', tone:'tone-c', items:[
+    {tone:'tone-a',name:'Alongamento Ombros & Tríceps II',series:'3×20',carga:'0 kg',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-shoulders-stretch-variation-1-front.mp4'},
+    {tone:'tone-b',name:'Bike Spinning Sentada',series:'40 reps',carga:'—',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-stationary-bike-side.mp4'},
+    {tone:'tone-c',name:'Abdominal Supra Solo',series:'5×15',carga:'0 kg',intervalo:'40s',video:'https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/Crunch_FR_1080.mp4'},
+    {tone:'tone-d',name:'Tríceps Unilateral (Polia Alta/Neutra)',series:'3×15',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-single-arm-rope-pushdown-side.mp4'},
+    {tone:'tone-a',name:'Alongamento Peitoral no Espaldar',series:'3×15',carga:'0 kg',intervalo:'40s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-chest-stretch-variation-1-side.mp4'},
+    {tone:'tone-b',name:'Mobilidade de Ombro III',series:'3×20',carga:'0 kg',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Recovery-thoracic-extensions-via-shoulder-flexion-foam-roller-front.mp4'},
+    {tone:'tone-c',name:'Rosca Alternada com Halteres',series:'3×15',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-curl-side.mp4'},
+    {tone:'tone-d',name:'Tríceps na Polia com Corda',series:'3×15 lento + 15 curto',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-push-down-side.mp4'},
+    {tone:'tone-a',name:'Crucifixo com Halteres',series:'4×12',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-fly-front.mp4'},
+    {tone:'tone-b',name:'Crucifixo Inclinado com Halteres',series:'4×12',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-flys-side.mp4'},
+    {tone:'tone-c',name:'Rosca Martelo com Halteres',series:'4×12',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-hammer-curl-side.mp4'},
+  ]},
+  { id:'shoulderback', icon:'fa-layer-group', title:'Ombro & Costas', tone:'tone-d', items:[
+    {tone:'tone-a',name:'Puxada Alta (pegada neutra)',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-machine-pulldown-side.mp4'},
+    {tone:'tone-b',name:'Abdominal Canivete',series:'3×12',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/V_Up_FR_1080.mp4'},
+    {tone:'tone-c',name:'Esteira Caminhada',series:'40 reps',carga:'—',intervalo:'—',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4'},
+    {tone:'tone-d',name:'Elevação Lateral Unilateral Sentado',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-seated-overhead-press-front.mp4'},
+    {tone:'tone-a',name:'Elevação Frontal Alternada',series:'3×12',carga:'4–6 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-raise-side.mp4'},
+    {tone:'tone-b',name:'Desenvolvimento c/ Halteres (neutra)',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/Neutral_Grip_DB_Press_FR_1080.mp4'},
+    {tone:'tone-c',name:'Puxada Neutra Triângulo',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/cables/_1080/Seated_Row_V_Grip_FR_1080.mp4'},
+    {tone:'tone-d',name:'Remada Baixa Triângulo',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-machine-seated-cable-row-front.mp4'},
+    {tone:'tone-a',name:'Puxada Aberta Barra Reta',series:'3×10/8/6 (Drop — 1 série)',carga:'0 kg',intervalo:'30s',video:'https://media.musclewiki.com/media/uploads/videos/branded/female-machine-pulldown-side.mp4'},
+  ]},
+];
+
+/* ========= Persistência ========= */
+const store = {
+  fav: JSON.parse(localStorage.getItem('fav')||'{}'),
+  done: JSON.parse(localStorage.getItem('done')||'{}'),
+  save(){ localStorage.setItem('fav',JSON.stringify(this.fav)); localStorage.setItem('done',JSON.stringify(this.done)); }
+};
+
+/* ========= Render ========= */
+const wrap = document.getElementById('wrap');
+
+const toneMap = ['tone-a','tone-b','tone-c','tone-d'];
+
+function cardTemplate(item, secId, idx){
+  const key = `${secId}:${idx}`;
+  const isFav = !!store.fav[key];
+  const isDone = !!store.done[key];
+  return `
+  <article class="card glass ${item.tone||toneMap[idx%4]} ${isFav||isDone?'pulse':''}" data-name="${(item.name+' '+item.series).toLowerCase()}" data-key="${key}">
+    <div class="card-inner">
+      <h4 class="title">${item.name}</h4>
+      <div class="row">
+        <span class="pill glass"><i class="fa-solid fa-dumbbell"></i> ${item.series}</span>
+        <span class="pill glass"><i class="fa-solid fa-weight-hanging"></i> ${item.carga}</span>
+        <span class="pill glass"><i class="fa-solid fa-stopwatch"></i> ${item.intervalo}</span>
+        <div class="act">
+          <button class="icon-btn gbtn glass pip" title="Picture-in-Picture"><i class="fa-solid fa-square"></i></button>
+          <button class="icon-btn gbtn glass favBtn ${isFav?'fav':''}" title="Favoritar"><i class="fa-solid fa-star"></i></button>
+          <button class="icon-btn gbtn glass doneBtn ${isDone?'done':''}" title="Concluir"><i class="fa-solid fa-check"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="video">
+      <video preload="metadata" src="${item.video}" controls playsinline></video>
+    </div>
+  </article>`;
+}
+
+function sectionTemplate(sec){
+  const items = sec.items.map((it,i)=>cardTemplate(it, sec.id, i)).join('');
+  return `
+  <section class="section glass ${sec.tone}" id="sec-${sec.id}">
+    <div class="s-head">
+      <h3 class="s-title"><i class="fa-solid ${sec.icon}"></i> ${sec.title}</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span class="muted" style="font-size:12px">${sec.items.length} exercícios</span>
+        <button class="s-toggle gbtn glass" data-sec="${sec.id}" title="Abrir/fechar"><i class="fa-solid fa-minus"></i></button>
+      </div>
+    </div>
+    <div class="s-body">
+      <div class="grid">${items}</div>
+    </div>
+  </section>`;
+}
+
+function render(){
+  wrap.innerHTML = DATA.map(sectionTemplate).join('');
+  bindSectionToggles();
+  bindCardActions();
+}
+render();
+
+/* ========= Section toggles (+/–) ========= */
+function bindSectionToggles(){
+  document.querySelectorAll('.s-toggle').forEach(btn=>{
+    btn.onclick = ()=>{
+      const sec = document.getElementById('sec-'+btn.dataset.sec);
+      sec.classList.toggle('collapsed');
+      btn.innerHTML = sec.classList.contains('collapsed') ? '<i class="fa-solid fa-plus"></i>' : '<i class="fa-solid fa-minus"></i>';
+    };
+  });
+}
+
+/* ========= Card actions (fav/done/PiP) ========= */
+function bindCardActions(){
+  document.querySelectorAll('.card').forEach(card=>{
+    const key = card.dataset.key;
+    card.querySelector('.favBtn').onclick = e=>{
+      store.fav[key] = !store.fav[key]; store.save();
+      e.currentTarget.classList.toggle('fav'); toast(store.fav[key]?'Favoritado':'Removido dos favoritos');
+      card.classList.add('pulse'); setTimeout(()=>card.classList.remove('pulse'),700);
+    };
+    card.querySelector('.doneBtn').onclick = e=>{
+      store.done[key] = !store.done[key]; store.save();
+      e.currentTarget.classList.toggle('done'); toast(store.done[key]?'Concluído':'Marcado como pendente');
+      card.classList.add('pulse'); setTimeout(()=>card.classList.remove('pulse'),700);
+    };
+    const pipBtn = card.querySelector('.pip');
+    const video = card.querySelector('video');
+    pipBtn.onclick = async()=>{
+      try{
+        if (document.pictureInPictureElement) { await document.exitPictureInPicture(); }
+        else if (document.pictureInPictureEnabled) { await video.requestPictureInPicture(); }
+      }catch(e){ toast('PiP não suportado'); }
+    };
+  });
+}
+
+/* ========= Spotlight Search ========= */
+const spot = document.getElementById('spot');
+const spotBtn = document.getElementById('spotBtn');
+const spotInput = document.getElementById('spotInput');
+
+spotBtn.onclick = ()=> openSpot();
+spot.onclick = e=>{ if(e.target===spot) closeSpot(); };
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSpot(); });
+
+function openSpot(){ spot.classList.add('on'); setTimeout(()=>spotInput.focus(),10); }
+function closeSpot(){ spot.classList.remove('on'); spotInput.value=''; filter(''); }
+
+spotInput.addEventListener('input', e=> filter(e.target.value.toLowerCase()));
+function filter(q){
+  document.querySelectorAll('.card').forEach(c=>{
+    const hay = c.dataset.name;
+    c.style.display = (!q || hay.includes(q)) ? '' : 'none';
+  });
+}
+
+/* ========= Tema ========= */
+const themeBtn = document.getElementById('themeBtn');
+function setTheme(dark){
+  document.body.classList.toggle('dark', dark);
+  themeBtn.innerHTML = dark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+  localStorage.setItem('theme', dark?'dark':'light');
+}
+setTheme(localStorage.getItem('theme')==='dark');
+themeBtn.onclick = ()=> setTheme(!document.body.classList.contains('dark'));
+
+/* ========= Upload (mock) ========= */
+document.getElementById('uploadBtn').onclick = ()=> toast('Upload rápido: abra a câmera e envie (mock)');
+
+/* ========= Reset ========= */
+const confirmModal = document.getElementById('confirm');
+document.getElementById('resetBtn').onclick = ()=> confirmModal.classList.add('on');
+document.getElementById('openReset').onclick = ()=> confirmModal.classList.add('on');
+document.getElementById('cCancel').onclick = ()=> confirmModal.classList.remove('on');
+document.getElementById('cOk').onclick = ()=>{
+  store.fav = {}; store.done = {}; store.save(); confirmModal.classList.remove('on');
+  render(); toast('Progresso resetado com sucesso');
+};
+
+/* ========= FAB ========= */
+const fab = document.getElementById('fab');
+const fabMenu = document.getElementById('fabMenu');
+fab.onclick = ()=> fab.classList.toggle('open');
+document.body.addEventListener('click',e=>{
+  if(!fab.contains(e.target) && !fabMenu.contains(e.target)) fab.classList.remove('open');
+});
+document.getElementById('favAll').onclick = ()=>{
+  document.querySelectorAll('.card').forEach(c=>{ store.fav[c.dataset.key]=true; });
+  store.save(); render(); toast('Todos favoritados');
+};
+document.getElementById('addNote').onclick = ()=> toast('Nota adicionada (mock)');
+
+/* ========= Timer (descanso) ========= */
+let tLeft = 0, tTick=null;
+const tDisp = document.getElementById('tDisplay');
+const tStart = document.getElementById('tStart');
+const tPause = document.getElementById('tPause');
+const tStop  = document.getElementById('tStop');
+
+document.querySelectorAll('.t-preset').forEach(p=> p.onclick = ()=>{ tLeft = parseInt(p.dataset.s); updateTimer(); });
+tStart.onclick = ()=>{ if(tLeft<=0) tLeft=60; startTimer(); };
+tPause.onclick = ()=>{ if(tTick){ clearInterval(tTick); tTick=null; } };
+tStop.onclick  = ()=>{ clearInterval(tTick); tTick=null; tLeft=0; updateTimer(); };
+
+function updateTimer(){
+  const m = String(Math.floor(tLeft/60)).padStart(2,'0');
+  const s = String(tLeft%60).padStart(2,'0');
+  tDisp.textContent = `${m}:${s}`;
+}
+function startTimer(){
+  if(tTick) return;
+  tTick = setInterval(()=>{
+    tLeft--; updateTimer();
+    if(tLeft<=5 && navigator.vibrate){ navigator.vibrate(100); }
+    if(tLeft<=0){ clearInterval(tTick); tTick=null; tLeft=0; updateTimer(); toast('Intervalo concluído — próxima série ✅'); alertLight('Intervalo concluído — próxima série ✅'); }
+  },1000);
+}
+updateTimer();
+
+/* ========= Toast & Popup leve ========= */
+const toastEl = document.getElementById('toast');
+function toast(msg){
+  toastEl.textContent = msg; toastEl.classList.add('on');
+  setTimeout(()=>toastEl.classList.remove('on'),1600);
+}
+function alertLight(msg){
+  // popup leve ao centro
+  const m=document.createElement('div');
+  m.className='panel glass'; m.style.cssText='position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:70;padding:14px;border-radius:16px';
+  m.textContent=msg; document.body.appendChild(m); setTimeout(()=>m.remove(),1300);
+}
+
+/* ========= Helpers ========= */
+</script>
+</body>
+</html>
