@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>MFIT – Treinos (Mobile)</title>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: linear-gradient(160deg,#071428 0%, #0f2748 100%);
+      --bg-light: linear-gradient(160deg,#f5f8ff 0%, #ffffff 100%);
+      --card-dark: rgba(255,255,255,.06);
+      --card-light: rgba(0,0,0,.06);
+      --txt-dark: #e9eefb;
+      --txt-light: #202020;
+      --muted-dark: #b8c4e4;
+      --muted-light: #606060;
+      --stroke-dark: rgba(255,255,255,.14);
+      --stroke-light: rgba(0,0,0,.12);
+      --blur: 16px;
+      --radius-xl: 18px;
+      --tr: .32s cubic-bezier(.2,.9,.2,1);
+    }
+
+    body {
+      margin:0; 
+      font-family: system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--txt-dark);
+      transition: background var(--tr), color var(--tr);
+    }
+    body.light {
+      background: var(--bg-light);
+      color: var(--txt-light);
+    }
+
+    .glass-card {
+      backdrop-filter: blur(var(--blur));
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--stroke-dark);
+      background: var(--card-dark);
+      transition: background var(--tr), border-color var(--tr);
+    }
+    body.light .glass-card {
+      border: 1px solid var(--stroke-light);
+      background: var(--card-light);
+    }
+
+    /* Navbar topo */
+    .navbar {
+      height:64px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 12px; position:sticky; top:0; z-index:20;
+    }
+    .nav-left, .nav-right { display:flex; align-items:center; gap:10px; }
+
+    .icon-btn {
+      width:40px; height:40px; display:grid; place-items:center;
+      border-radius:12px; cursor:pointer;
+      background:transparent; border:none; font-size:18px;
+      transition: transform var(--tr);
+    }
+    .icon-btn:hover { transform:scale(1.1); }
+
+    /* Bottom nav */
+    .bottom-bar {
+      position:fixed; bottom:12px; left:12px; right:12px;
+      height:60px; display:flex; justify-content:space-around; align-items:center;
+      border-radius:16px; z-index:30;
+      border:1px solid var(--stroke-dark); background:var(--card-dark);
+      backdrop-filter: blur(calc(var(--blur) - 6px));
+      transition: background var(--tr), border-color var(--tr);
+    }
+    body.light .bottom-bar {
+      border:1px solid var(--stroke-light); background:var(--card-light);
+    }
+    .nav-item { font-size:20px; color:inherit; background:none; border:none; cursor:pointer; }
+    .nav-item.active { transform:scale(1.2); }
+
+    /* Content */
+    .content { padding:14px; display:grid; gap:12px; }
+
+    /* Accordion */
+    .section-body {
+      max-height:0; opacity:0; overflow:hidden;
+      transform: translateY(-6px) scale(.98); filter:blur(6px);
+      transition: all var(--tr);
+    }
+    .section.open .section-body {
+      max-height:2000px; opacity:1; transform:none; filter:none; margin-top:8px;
+    }
+    .section-header { cursor:pointer; padding:12px; display:flex; justify-content:space-between; }
+    .toggle-icon { transition: transform var(--tr); }
+    .section.open .toggle-icon { transform:rotate(180deg); }
+
+    /* Workout card */
+    .workout-card { padding:12px; border-radius:14px; }
+    .w-title { font-weight:700; margin:0; font-size:15px; }
+    .w-meta { font-size:13px; opacity:.7; }
+
+    .compact .workout-card video { display:none; }
+
+    /* Modal upload */
+    .modal { position:fixed; inset:0; background:rgba(0,0,0,.6);
+      display:grid; place-items:center; z-index:50; opacity:0; pointer-events:none;
+      transition:opacity var(--tr); }
+    .modal.active { opacity:1; pointer-events:auto; }
+    .modal-content {
+      padding:20px; width:90%; max-width:360px;
+      display:flex; flex-direction:column; gap:12px;
+    }
+    .modal-content textarea { width:100%; padding:8px; resize:none; border-radius:8px; }
+    .spinner { display:none; }
+    .spinner.active { display:block; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar glass-card">
+    <div class="nav-left">
+      <button class="icon-btn" id="btnTheme"><i class="fa-solid fa-moon"></i></button>
+      <strong>MFIT</strong>
+    </div>
+    <div class="nav-right">
+      <button class="icon-btn" id="btnUpload"><i class="fa-solid fa-camera"></i></button>
+      <button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="content compact" id="content">
+    <section class="section glass-card">
+      <div class="section-header">
+        <span>Treino de Quadríceps</span>
+        <i class="fa-solid fa-chevron-down toggle-icon"></i>
+      </div>
+      <div class="section-body">
+        <article class="workout-card glass-card">
+          <h4 class="w-title">Agachamento Sumô com Halteres</h4>
+          <div class="w-meta">3x10/10/10 • Carga: 0kg • Intervalo: 60s</div>
+          <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4" controls></video>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-bar glass-card">
+    <button class="nav-item active" data-tab="home"><i class="fa-solid fa-house"></i></button>
+    <button class="nav-item" data-tab="fav"><i class="fa-solid fa-star"></i></button>
+  </nav>
+
+  <!-- Modal Upload -->
+  <div class="modal" id="uploadModal">
+    <div class="modal-content glass-card">
+      <h3>Enviar Foto</h3>
+      <input type="file" id="uploadFile" accept="image/*">
+      <textarea id="uploadObs" rows="3" placeholder="Observações..."></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <button class="btn-primary" id="sendBtn">Enviar</button>
+        <i class="fa-solid fa-spinner spinner" id="spinner"></i>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Toggle accordion
+  document.querySelectorAll(".section-header").forEach(h=>{
+    h.addEventListener("click",()=>{
+      h.parentElement.classList.toggle("open");
+    });
+  });
+
+  // Theme toggle
+  const btnTheme=document.getElementById("btnTheme");
+  btnTheme.addEventListener("click",()=>{
+    document.body.classList.toggle("light");
+    btnTheme.innerHTML=document.body.classList.contains("light") ? 
+      '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+  });
+
+  // Upload modal
+  const modal=document.getElementById("uploadModal");
+  document.getElementById("btnUpload").onclick=()=> modal.classList.add("active");
+  document.getElementById("sendBtn").onclick=()=>{
+    document.getElementById("spinner").classList.add("active");
+    setTimeout(()=>{
+      document.getElementById("spinner").classList.remove("active");
+      modal.classList.remove("active");
+      alert("Foto enviada!");
+    },1500);
+  };
+  modal.addEventListener("click",e=>{
+    if(e.target===modal) modal.classList.remove("active");
+  });
+
+  // Bottom nav
+  document.querySelectorAll(".nav-item").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".nav-item").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      if(btn.dataset.tab==="home"){ window.scrollTo({top:0,behavior:"smooth"}); }
+      if(btn.dataset.tab==="fav"){ alert("Favoritos em breve!"); }
+    });
+  });
+</script>
+</body>
+</html>
