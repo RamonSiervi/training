@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PERSONAL • Preview Futurista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0c1220; /* base dark */
+    --panel: rgba(255,255,255,.06);
+    --panel-strong: rgba(255,255,255,.12);
+    --text: #E9F1FF;
+    --muted: #A9B4C9;
+    --glass-border: 1px solid rgba(255,255,255,.18);
+    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --brand: #6BD4FF;       /* Neon Blue */
+    --brand-2: #7A5CFF;     /* Cyber Purple */
+    --brand-3: #14D8A7;     /* Carbon Green */
+    --accent: var(--brand);
+    --ok: #37E39F;
+    --danger: #FF6B6B;
+    --card: rgba(255,255,255,.06);
+    --card-blur: saturate(160%) blur(12px);
+  }
+  /* Skins */
+  [data-skin="neon"]{--accent: var(--brand);} 
+  [data-skin="cyber"]{--accent: var(--brand-2);} 
+  [data-skin="carbon"]{--accent: var(--brand-3);} 
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:Outfit,system-ui,-apple-system,Segoe UI,Roboto; color:var(--text);
+    background: radial-gradient(1400px 700px at -10% -10%, #213154 0%, transparent 60%),
+                radial-gradient(1200px 600px at 110% 10%, #1b2550 0%, transparent 60%),
+                radial-gradient(1000px 800px at 50% 120%, #11192f 0%, transparent 60%),
+                var(--bg);
+    overflow-x:hidden;
+  }
+  .wrap{max-width:1160px; margin:0 auto; padding:28px 20px 100px}
+
+  /* NAV */
+  .nav{
+    display:flex; align-items:center; gap:14px; justify-content:space-between; position:sticky; top:12px; z-index:30;
+    backdrop-filter: blur(10px); background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    border: var(--glass-border); border-radius:18px; padding:10px 14px; box-shadow: var(--shadow);
+  }
+  .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.8px}
+  .logo{
+    width:38px; height:38px; border-radius:12px; display:grid; place-items:center; font-weight:900;
+    background: radial-gradient(120% 120% at 20% 20%, var(--accent), rgba(255,255,255,.12));
+    color:#0b1020; text-shadow:0 0 18px rgba(255,255,255,.5)
+  }
+  .nav-actions{display:flex; align-items:center; gap:10px}
+  .chip{border:var(--glass-border); background:var(--panel); padding:8px 12px; border-radius:12px; color:var(--text); cursor:pointer}
+  .icon-btn{width:40px; height:40px; border-radius:12px; display:grid; place-items:center; border:var(--glass-border); background:var(--panel); cursor:pointer}
+  .icon-btn:hover{outline:1px solid rgba(255,255,255,.25)}
+
+  /* HERO DASH */
+  .hero{
+    display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; margin-top:18px
+  }
+  .panel{
+    background: var(--panel); border:var(--glass-border); border-radius:22px; padding:18px; box-shadow:var(--shadow);
+    backdrop-filter: var(--card-blur);
+  }
+  .panel h2{margin:0 0 6px; font-size:26px}
+  .muted{color:var(--muted); font-size:14px}
+
+  .stats{display:grid; grid-template-columns: repeat(3,1fr); gap:14px}
+  .stat{position:relative; overflow:hidden}
+  .ring{width:120px; height:120px; position:relative}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .value{position:absolute; inset:0; display:grid; place-items:center; font-weight:800; font-size:22px}
+  .stat .label{margin-top:8px; font-weight:600}
+
+  .carousel{display:flex; gap:10px; overflow:auto; padding-bottom:6px}
+  .thumb{min-width:120px; height:84px; border-radius:14px; background:#111a2b; border:var(--glass-border); overflow:hidden}
+  .thumb img{width:100%; height:100%; object-fit:cover}
+
+  /* SECTION LIST */
+  .section{margin-top:22px}
+  .section-head{
+    display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-radius:16px; cursor:pointer;
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04)); border:var(--glass-border);
+  }
+  .section-head .title{display:flex; align-items:center; gap:10px; font-weight:700}
+  .toggle{width:36px; height:36px; border-radius:10px; display:grid; place-items:center; border:var(--glass-border); background:var(--panel)}
+  .toggle i{transition: transform .35s ease}
+  .section[open] .toggle i{transform:rotate(180deg)}
+  .progress{height:8px; background:rgba(255,255,255,.12); border-radius:8px; overflow:hidden}
+  .progress > span{display:block; height:100%; width:0; background:linear-gradient(90deg, var(--accent), #ffffff66)}
+
+  .cards{display:grid; grid-template-columns: repeat(2, minmax(260px,1fr)); gap:14px; padding:14px 4px}
+  @media (max-width:840px){ .hero{grid-template-columns:1fr} .cards{grid-template-columns:1fr} }
+
+  .card{
+    position:relative; border-radius:18px; border:var(--glass-border); background:var(--card); overflow:hidden; backdrop-filter: var(--card-blur);
+    transition:.35s cubic-bezier(.2,.6,.2,1); outline:1px solid transparent
+  }
+  .card:hover{transform: translateY(-2px)}
+  .card.ghost{opacity:.55}
+  .card video{width:100%; height:180px; object-fit:cover; display:block}
+  .card .content{padding:12px 14px}
+  .card h4{margin:0 0 6px}
+  .meta{display:grid; grid-template-columns: repeat(3,1fr); gap:6px; font-size:12px; color:var(--muted)}
+  .meta b{color:var(--text)}
+  .cta-row{display:flex; align-items:center; justify-content:space-between; margin-top:10px}
+  .pill{border:var(--glass-border); padding:8px 10px; border-radius:12px; background:rgba(255,255,255,.07)}
+  .finish{appearance:none; width:52px; height:30px; border-radius:30px; position:relative; background:rgba(255,255,255,.14); outline:none; cursor:pointer; border:var(--glass-border)}
+  .finish:before{content:""; position:absolute; top:3px; left:3px; width:24px; height:24px; background:#fff; border-radius:50%; transition:.25s}
+  .finish:checked{background:linear-gradient(90deg,#22e38f,#aaf1d2)}
+  .finish:checked:before{left:25px}
+  .card.done{outline:1px solid rgba(34,227,143,.6); box-shadow:0 0 0 3px rgba(34,227,143,.15) inset}
+
+  /* FOCUS MODE */
+  .focus-btn{margin-left:auto}
+  .focus-layer{position:fixed; inset:0; display:none; place-items:center; background:rgba(4,6,14,.65); backdrop-filter: blur(8px); z-index:50}
+  .focus-layer.active{display:grid}
+  .focus-card{max-width:720px; width:92%; border-radius:22px; border:var(--glass-border); background:var(--panel); overflow:hidden}
+  .focus-controls{display:flex; align-items:center; gap:10px; padding:10px 14px; justify-content:space-between}
+  .timer{font-weight:800}
+
+  /* MODALS */
+  .modal{position:fixed; inset:0; display:none; place-items:center; background:rgba(10,12,20,.55); backdrop-filter: blur(12px); z-index:60}
+  .modal.active{display:grid}
+  .dialog{width:min(560px,92%); background:var(--panel); border:var(--glass-border); border-radius:18px; box-shadow:var(--shadow)}
+  .dialog header{display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:var(--glass-border)}
+  .dialog .body{padding:14px}
+  .btn{padding:10px 14px; border-radius:12px; border:var(--glass-border); background:var(--panel); color:var(--text); cursor:pointer}
+  .btn.primary{background: linear-gradient(90deg, var(--accent), #ffffff55); color:#0c1220; font-weight:800}
+  .btn.danger{background:linear-gradient(90deg,#ff8585,#ffd1d1); color:#2b0c0f; font-weight:700}
+
+  /* Upload */
+  .upload-area{display:grid; gap:10px}
+  .drop{border:2px dashed rgba(255,255,255,.2); border-radius:14px; padding:14px; text-align:center}
+  .preview{display:flex; gap:10px; overflow:auto}
+  .preview img{height:80px; border-radius:10px}
+
+  /* Toast */
+  .toast{position:fixed; bottom:18px; right:18px; padding:10px 14px; border-radius:12px; background:rgba(18,28,50,.85); border:var(--glass-border); opacity:0; transform:translateY(10px); transition:.3s; z-index:100}
+  .toast.show{opacity:1; transform:translateY(0)}
+
+  /* Section color hint */
+  .hint-blue{background: linear-gradient(90deg, rgba(77,154,255,.12), rgba(255,255,255,.04))}
+  .hint-purple{background: linear-gradient(90deg, rgba(144,106,255,.12), rgba(255,255,255,.04))}
+  .hint-green{background: linear-gradient(90deg, rgba(33,224,158,.12), rgba(255,255,255,.04))}
+  .hint-cyan{background: linear-gradient(90deg, rgba(40,214,214,.12), rgba(255,255,255,.04))}
+</style>
+</head>
+<body data-skin="neon">
+  <div class="wrap">
+    <!-- NAV -->
+    <div class="nav panel">
+      <div class="brand">
+        <div class="logo">P</div>
+        <div>PERSONAL</div>
+      </div>
+      <div class="nav-actions">
+        <div class="chip" id="skinBtn"><i class="fa-solid fa-palette"></i> Skin</div>
+        <button class="icon-btn" id="uploadBtn" title="Enviar foto"><i class="fa-solid fa-camera"></i></button>
+        <button class="icon-btn" id="resetBtn" title="Resetar concluídos"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+    </div>
+
+    <!-- HERO DASHBOARD -->
+    <div class="hero">
+      <div class="panel">
+        <h2>Resumo da Semana</h2>
+        <p class="muted">Seu desempenho geral nos treinos.</p>
+        <div class="stats">
+          <div class="panel stat">
+            <div class="ring" data-ring="treinos">
+              <svg width="120" height="120">
+                <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.15)" stroke-width="12" fill="none"/>
+                <circle class="bar" cx="60" cy="60" r="54" stroke="var(--accent)" stroke-linecap="round" stroke-width="12" fill="none" stroke-dasharray="339.292" stroke-dashoffset="339.292"/>
+              </svg>
+              <div class="value">0</div>
+            </div>
+            <div class="label">Treinos concluídos</div>
+          </div>
+          <div class="panel stat">
+            <div class="ring" data-ring="tempo">
+              <svg width="120" height="120">
+                <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.15)" stroke-width="12" fill="none"/>
+                <circle class="bar" cx="60" cy="60" r="54" stroke="#9ad8ff" stroke-linecap="round" stroke-width="12" fill="none" stroke-dasharray="339.292" stroke-dashoffset="339.292"/>
+              </svg>
+              <div class="value">0m</div>
+            </div>
+            <div class="label">Tempo total</div>
+          </div>
+          <div class="panel stat">
+            <div class="ring" data-ring="medalhas">
+              <svg width="120" height="120">
+                <circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.15)" stroke-width="12" fill="none"/>
+                <circle class="bar" cx="60" cy="60" r="54" stroke="#37E39F" stroke-linecap="round" stroke-width="12" fill="none" stroke-dasharray="339.292" stroke-dashoffset="339.292"/>
+              </svg>
+              <div class="value">0</div>
+            </div>
+            <div class="label">Medalhas</div>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          <div class="muted" style="margin-bottom:6px">Histórico visual</div>
+          <div class="carousel" id="historyCarousel"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Seções de Treino</h2>
+        <p class="muted">Toque para abrir e concluir os exercícios.</p>
+        <div style="display:flex; gap:8px; align-items:center; margin-top:8px">
+          <div class="pill">Skin: <b id="skinName">Neon Blue</b></div>
+          <div class="pill focus-btn" id="focusBtn"><i class="fa-solid fa-headphones"></i> Modo Foco</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTIONS -->
+    <div id="sections"></div>
+  </div>
+
+  <!-- FOCUS MODE LAYER -->
+  <div class="focus-layer" id="focusLayer">
+    <div class="focus-card">
+      <video id="focusVideo" controls></video>
+      <div class="focus-controls">
+        <div id="focusTitle"></div>
+        <div class="timer" id="focusTimer">00:30</div>
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="focusPrev"><i class="fa-solid fa-arrow-left"></i></button>
+          <button class="btn primary" id="focusNext">Próximo</button>
+          <button class="btn" id="focusClose">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL UPLOAD -->
+  <div class="modal" id="uploadModal">
+    <div class="dialog">
+      <header>
+        <strong>Enviar foto do treino</strong>
+        <button class="icon-btn" id="uploadClose"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="body">
+        <div class="upload-area">
+          <div class="drop">
+            <input type="file" id="fileInput" accept="image/*" multiple>
+          </div>
+          <textarea id="noteInput" rows="3" placeholder="Observação (opcional)" class="panel" style="width:100%"></textarea>
+          <div class="preview" id="uploadPreview"></div>
+          <div style="display:flex; justify-content:flex-end; gap:8px">
+            <button class="btn" id="uploadCancel">Cancelar</button>
+            <button class="btn primary" id="uploadSend">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RESET -->
+  <div class="modal" id="resetModal">
+    <div class="dialog">
+      <header>
+        <strong>Resetar progresso</strong>
+        <button class="icon-btn" id="resetClose"><i class="fa-solid fa-xmark"></i></button>
+      </header>
+      <div class="body">
+        <p class="muted">Isso vai limpar todos os exercícios concluídos e o histórico local.</p>
+        <div style="display:flex; justify-content:flex-end; gap:8px">
+          <button class="btn" id="resetCancel">Cancelar</button>
+          <button class="btn danger" id="resetConfirm">Resetar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+// ===================== DATA =====================
+const TREINOS = [
+  {
+    nome:"Treino de Quadríceps",
+    corClass:"hint-blue",
+    itens:[
+      {n:"Agachamento Sumô com Halteres", s:"3x10/10/10 (Drop – conta como 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4"},
+      {n:"Leg Press 45°", s:"4x15 (pés colados) + 15 (afastados)", c:"12 kg", i:"40s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-leg-press-front.mp4"},
+      {n:"Adução de Quadril Máquina", s:"3x10/10/10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-adduction-front.mp4"},
+      {n:"Cadeira Flexorad", s:"3x10/10/10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-seated-leg-curl-side.mp4"},
+      {n:"Cadeira Flexora Unilateral", s:"3x10/10/10/10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Seated_Leg_Curl_FR_1080.mp4"},
+      {n:"Panturrilha no Step", s:"4x15", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-calves-stretch-variation-3-side.mp4"},
+      {n:"Abdominal Canivete", s:"4x15", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-suitcase-crunch-side.mp4"},
+      {n:"Esteira Caminhada", s:"30 reps", c:"—", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4"}
+    ]
+  },
+  {
+    nome:"Posterior & Glúteo",
+    corClass:"hint-purple",
+    itens:[
+      {n:"Agachamento com Halteres", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-rack-squat-side.mp4"},
+      {n:"Abdução de Quadril Máquina", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-abduction-front.mp4"},
+      {n:"Elíptico", s:"25 reps", c:"0 kg", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-elliptical-side.mp4"},
+      {n:"Afundo com Barra Livre", s:"3x12 3x10 2x8", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-lunge-side.mp4"},
+      {n:"Agachamento Sumô no Step com Halteres", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/DB_Sumo_Squat_FR_1080.mp4"},
+      {n:"Abdução de Quadril Máquina (2)", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Hip_Abduction_FR_1080.mp4"},
+      {n:"Cadeira Extensora", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-machine-leg-extension-side.mp4"},
+      {n:"Cadeira Extensora Unilateral", s:"3x10+10+10 (Drop – 1)", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Single_Leg_Extension_FR_1080.mp4"},
+      {n:"Leg Press 45° Unilateral", s:"3x12 3x10 2x8", c:"0 kg", i:"60s", v:"https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Leg_Press_FR_1080.mp4"}
+    ]
+  },
+  {
+    nome:"Peito, Tríceps & Bíceps",
+    corClass:"hint-green",
+    itens:[
+      {n:"Alongamento Ombros & Tríceps II", s:"3x20", c:"0 kg", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-shoulders-stretch-variation-1-front.mp4"},
+      {n:"Bike Spinning Sentada", s:"40 reps", c:"—", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-stationary-bike-side.mp4"},
+      {n:"Abdominal Supra Solo", s:"5x15", c:"0 kg", i:"40s", v:"https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/Crunch_FR_1080.mp4"},
+      {n:"Tríceps Unilateral Polia Alta (Neutra)", s:"3x15", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-single-arm-rope-pushdown-side.mp4"},
+      {n:"Alongamento de Peitoral Espaldar", s:"3x15", c:"0 kg", i:"40s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-chest-stretch-variation-1-side.mp4"},
+      {n:"Mobilidade de Ombro III", s:"3x20", c:"0 kg", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Recovery-thoracic-extensions-via-shoulder-flexion-foam-roller-front.mp4"},
+      {n:"Rosca Alternada com Halteres", s:"3x15", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-curl-side.mp4"},
+      {n:"Tríceps Polia com Corda", s:"3x15 Lento + 15 curto", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-push-down-side.mp4"},
+      {n:"Crucifixo com Halteres", s:"4x12", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-fly-front.mp4"},
+      {n:"Crucifixo Inclinado com Halteres", s:"4x12", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-flys-side.mp4"},
+      {n:"Rosca Martelo com Halteres", s:"4x12", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-hammer-curl-side.mp4"}
+    ]
+  },
+  {
+    nome:"Ombro & Costas",
+    corClass:"hint-cyan",
+    itens:[
+      {n:"Puxada alta (pegada neutra)", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-neutral-overhead-press-side.mp4"},
+      {n:"Abdominal Canivete", s:"3x12", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/V-Up_FR_1080.mp4"},
+      {n:"Esteira Caminhada", s:"40 reps", c:"—", i:"—", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4"},
+      {n:"Elevação Lateral Unilateral Sentado", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-seated-overhead-press-front.mp4"},
+      {n:"Elevação Frontal Alternada", s:"3x12", c:"4–6 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-raise-side.mp4"},
+      {n:"Desenvolvimento com Halteres (neutra)", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/Neutral_Grip_DB_Press_FR_1080.mp4"},
+      {n:"Puxada Neutra Triângulo", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/cables/_1080/Seated_Row_V_Grip_FR_1080.mp4"},
+      {n:"Remada Baixa Triângulo", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-machine-seated-cable-row-front.mp4"},
+      {n:"Puxada Aberta Barra Reta", s:"3x10/8/6 (Drop – 1)", c:"0 kg", i:"30s", v:"https://media.musclewiki.com/media/uploads/videos/branded/female-machine-pulldown-side.mp4"}
+    ]
+  }
+];
+
+// ===================== STATE =====================
+const state = {
+  done: JSON.parse(localStorage.getItem('done')||'{}'),
+  photos: JSON.parse(localStorage.getItem('photos')||'[]'),
+  skin: localStorage.getItem('skin')||'neon'
+};
+
+// ===================== UI BUILD =====================
+const sectionsEl = document.getElementById('sections');
+
+TREINOS.forEach((sec, si)=>{
+  const container = document.createElement('section');
+  container.className = 'section';
+  container.dataset.index = si;
+
+  const head = document.createElement('div');
+  head.className = `section-head ${sec.corClass}`;
+  head.innerHTML = `
+    <div class="title"><div class="toggle"><i class="fa-solid fa-plus"></i></div> ${sec.nome}</div>
+    <div style="min-width:160px;">
+      <div class="progress"><span></span></div>
+    </div>`;
+
+  const body = document.createElement('div');
+  body.className = 'cards';
+  body.style.display = 'none';
+
+  // cards
+  sec.itens.forEach((ex, ei)=>{
+    const key = `${si}-${ei}`;
+    const done = !!state.done[key];
+    const card = document.createElement('div');
+    card.className = `card ${done?'done':''}`;
+    card.innerHTML = `
+      <video src="${ex.v}" playsinline preload="none" controls></video>
+      <div class="content">
+        <h4>${ex.n}</h4>
+        <div class="meta">
+          <div>Séries <b>${ex.s}</b></div>
+          <div>Carga <b>${ex.c}</b></div>
+          <div>Intervalo <b>${ex.i}</b></div>
+        </div>
+        <div class="cta-row">
+          <div class="pill">Pronto?</div>
+          <label>
+            <input type="checkbox" class="finish" ${done?'checked':''} data-key="${key}">
+          </label>
+        </div>
+      </div>`;
+    body.appendChild(card);
+  });
+
+  container.appendChild(head); container.appendChild(body); sectionsEl.appendChild(container);
+});
+
+// toggle open/close
+sectionsEl.addEventListener('click', (e)=>{
+  const head = e.target.closest('.section-head');
+  if(!head) return;
+  const section = head.parentElement; 
+  const icon = head.querySelector('.toggle i');
+  const cards = section.querySelector('.cards');
+  const open = section.hasAttribute('open');
+  if(open){
+    section.removeAttribute('open'); icon.className='fa-solid fa-plus'; cards.animate([{opacity:1, height:'auto'},{opacity:0}],{duration:200,fill:'forwards'});
+    setTimeout(()=>cards.style.display='none',200);
+  }else{
+    section.setAttribute('open',''); icon.className='fa-solid fa-minus'; cards.style.display='grid'; cards.animate([{opacity:0, transform:'translateY(8px)'},{opacity:1, transform:'translateY(0)'}],{duration:260, easing:'ease-out'});
+  }
+});
+
+// finish toggle
+sectionsEl.addEventListener('change', (e)=>{
+  const fin = e.target.closest('.finish');
+  if(!fin) return;
+  const key = fin.dataset.key; state.done[key] = fin.checked; if(!fin.checked) delete state.done[key];
+  localStorage.setItem('done', JSON.stringify(state.done));
+  fin.closest('.card').classList.toggle('done', fin.checked);
+  updateProgress(); updateRings(); toast(fin.checked?'Exercício concluído!':'Marcado como pendente');
+});
+
+function updateProgress(){
+  // progress per section
+  TREINOS.forEach((sec, si)=>{
+    const total = sec.itens.length; let done=0; sec.itens.forEach((_,ei)=>{if(state.done[`${si}-${ei}`]) done++});
+    const span = document.querySelector(`section[data-index="${si}"] .progress > span`);
+    const pct = Math.round((done/total)*100); span.style.width = pct+'%';
+  })
+}
+
+// =========== RINGS ANIMATION ===========
+function animateRing(el, pct, label){
+  const circ = 339.292; const off = circ - circ*(pct/100);
+  const bar = el.querySelector('.bar');
+  bar.animate([{strokeDashoffset:circ},{strokeDashoffset:off}],{duration:600,fill:'forwards',easing:'cubic-bezier(.2,.8,.2,1)'});
+  el.querySelector('.value').textContent = label;
+}
+function updateRings(){
+  // completed exercises
+  const total = TREINOS.reduce((a,s)=>a+s.itens.length,0); const done = Object.values(state.done).filter(Boolean).length;
+  const pct = Math.round((done/total)*100); animateRing(document.querySelector('[data-ring="treinos"]'), pct, done);
+  // time rough estimate 45s per exercise checked
+  const minutes = Math.round(done*0.75); const tpct = Math.min(100, minutes/60*100); animateRing(document.querySelector('[data-ring="tempo"]'), tpct, minutes+'m');
+  // medals simple: every 8 exercises
+  const medals = Math.floor(done/8); const mpct = Math.min(100, (done%8)/8*100); animateRing(document.querySelector('[data-ring="medalhas"]'), mpct, medals);
+}
+
+// =========== SKINS ===========
+const skinBtn = document.getElementById('skinBtn');
+const skinName = document.getElementById('skinName');
+const SKINS = ['neon','cyber','carbon'];
+function setSkin(s){ document.body.setAttribute('data-skin', s); skinName.textContent = s==='neon'?'Neon Blue': s==='cyber'?'Cyber Purple':'Carbon Dark'; localStorage.setItem('skin', s) }
+setSkin(state.skin);
+skinBtn.addEventListener('click',()=>{ const i = SKINS.indexOf(document.body.getAttribute('data-skin')); setSkin(SKINS[(i+1)%SKINS.length]);});
+
+// =========== UPLOAD ===========
+const uploadBtn=document.getElementById('uploadBtn');
+const uploadModal=document.getElementById('uploadModal');
+const fileInput=document.getElementById('fileInput');
+const uploadClose=document.getElementById('uploadClose');
+const uploadCancel=document.getElementById('uploadCancel');
+const uploadSend=document.getElementById('uploadSend');
+const uploadPreview=document.getElementById('uploadPreview');
+const noteInput=document.getElementById('noteInput');
+
+function openUpload(){ uploadModal.classList.add('active'); fileInput.value=''; uploadPreview.innerHTML=''; noteInput.value=''; }
+function closeUpload(){ uploadModal.classList.remove('active'); }
+
+uploadBtn.onclick=openUpload; uploadClose.onclick=closeUpload; uploadCancel.onclick=closeUpload;
+fileInput.addEventListener('change', ()=>{
+  uploadPreview.innerHTML='';
+  [...fileInput.files].forEach(f=>{ const r=new FileReader(); r.onload=e=>{ const img=document.createElement('img'); img.src=e.target.result; uploadPreview.appendChild(img); }; r.readAsDataURL(f); });
+});
+
+uploadSend.addEventListener('click', ()=>{
+  if(!fileInput.files.length){ toast('Selecione pelo menos uma imagem.'); return; }
+  [...fileInput.files].forEach(f=>{ const r=new FileReader(); r.onload=e=>{ state.photos.unshift({src:e.target.result, note:noteInput.value||'', ts:Date.now()}); savePhotos(); renderHistory(); }; r.readAsDataURL(f); });
+  toast('Fotos salvas no dispositivo.'); closeUpload();
+});
+
+function savePhotos(){ localStorage.setItem('photos', JSON.stringify(state.photos.slice(0,30))); }
+function renderHistory(){ const car=document.getElementById('historyCarousel'); car.innerHTML=''; state.photos.slice(0,12).forEach(p=>{ const t=document.createElement('div'); t.className='thumb'; t.innerHTML=`<img src="${p.src}" alt=\"\">`; car.appendChild(t); }); }
+renderHistory();
+
+// =========== RESET ===========
+const resetBtn=document.getElementById('resetBtn');
+const resetModal=document.getElementById('resetModal');
+const resetClose=document.getElementById('resetClose');
+const resetCancel=document.getElementById('resetCancel');
+const resetConfirm=document.getElementById('resetConfirm');
+resetBtn.onclick=()=>resetModal.classList.add('active');
+resetClose.onclick=()=>resetModal.classList.remove('active');
+resetCancel.onclick=()=>resetModal.classList.remove('active');
+resetConfirm.onclick=()=>{ state.done={}; state.photos=[]; localStorage.removeItem('done'); savePhotos(); document.querySelectorAll('.finish').forEach(i=>i.checked=false); document.querySelectorAll('.card').forEach(c=>c.classList.remove('done')); updateProgress(); updateRings(); renderHistory(); toast('Progresso resetado com sucesso'); resetModal.classList.remove('active'); };
+
+// =========== FOCUS MODE ===========
+const focusBtn=document.getElementById('focusBtn'); const focusLayer=document.getElementById('focusLayer');
+const focusVideo=document.getElementById('focusVideo'); const focusTitle=document.getElementById('focusTitle');
+const focusTimer=document.getElementById('focusTimer'); const focusPrev=document.getElementById('focusPrev'); const focusNext=document.getElementById('focusNext'); const focusClose=document.getElementById('focusClose');
+let focusList=[]; let focusIndex=0; let countdown=30; let interval;
+
+focusBtn.onclick=()=>{
+  focusList = TREINOS.flatMap(s=>s.itens.map(i=>({title:i.n, src:i.v})));
+  focusIndex=0; openFocus();
+}
+function openFocus(){ focusLayer.classList.add('active'); loadFocus(); startTimer(30); }
+function closeFocus(){ focusLayer.classList.remove('active'); stopTimer(); }
+function loadFocus(){ const it=focusList[focusIndex]; focusVideo.src=it.src; focusTitle.textContent=it.title; }
+function nextFocus(){ focusIndex = (focusIndex+1)%focusList.length; loadFocus(); startTimer(30); }
+function prevFocus(){ focusIndex = (focusIndex-1+focusList.length)%focusList.length; loadFocus(); startTimer(30); }
+function startTimer(sec){ stopTimer(); countdown=sec; renderTimer(); interval=setInterval(()=>{ countdown--; renderTimer(); if(countdown<=0){ nextFocus(); } },1000); }
+function stopTimer(){ clearInterval(interval); }
+function renderTimer(){ const m=String(Math.floor(countdown/60)).padStart(2,'0'); const s=String(countdown%60).padStart(2,'0'); focusTimer.textContent=`${m}:${s}` }
+focusNext.onclick=nextFocus; focusPrev.onclick=prevFocus; focusClose.onclick=closeFocus;
+
+// =========== TOAST ===========
+const toastEl=document.getElementById('toast');
+function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),1500); }
+
+// initial
+updateProgress(); updateRings(); setSkin(state.skin);
+</script>
+</body>
+</html>
