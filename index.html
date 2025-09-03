@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PERSONAL — Preview Novo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+  :root{
+    --ink:#0f172a; --ink-2:#64748b;
+    --bg1:#f9fbff; --bg2:#ffffff;
+    --blur:20px; --r:20px; --tr:.35s cubic-bezier(.2,.9,.2,1);
+    --line:rgba(15,25,55,.08);
+    --glass:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.35));
+    /* dark */
+    --inkD:#e2e8f0; --ink-2D:#94a3b8;
+    --bg1D:#0b1225; --bg2D:#0a101e;
+    --glassD:linear-gradient(180deg,rgba(18,26,56,.65),rgba(18,26,56,.45));
+    --lineD:rgba(255,255,255,.12);
+  }
+  body{
+    margin:0;font-family:system-ui, sans-serif;
+    background:radial-gradient(1200px 600px at -10% -10%, var(--bg1) 0%, var(--bg2) 60%) fixed;
+    color:var(--ink); transition:background var(--tr),color var(--tr);
+  }
+  body.dark{background:radial-gradient(1200px 600px at -10% -10%, var(--bg1D) 0%, var(--bg2D) 60%) fixed;color:var(--inkD);}
+  .glass{background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(var(--blur));transition:background var(--tr),border-color var(--tr)}
+  body.dark .glass{background:var(--glassD);border-color:var(--lineD)}
+
+  .wrap{max-width:1060px;margin:0 auto;padding:20px}
+
+  /* header */
+  .top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
+  .logo{font-weight:900;font-size:20px}
+  .actions{display:flex;align-items:center;gap:10px}
+  .gbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;cursor:pointer}
+
+  /* weather minimal */
+  .weather-mini{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:14px;font-weight:600}
+  .w-temp{font-size:16px}
+
+  /* spotlight search */
+  .spot{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.28);opacity:0;pointer-events:none;transition:opacity var(--tr);z-index:30}
+  .spot.on{opacity:1;pointer-events:auto}
+  .spot-panel{width:min(92vw,600px);padding:16px;border-radius:18px;display:grid;gap:10px}
+  .spot-input{height:56px;font-size:18px;border:none;outline:none;border-radius:14px;padding:0 14px}
+
+  /* seção */
+  .section{border-radius:22px;margin:20px 0;overflow:hidden;box-shadow:0 10px 25px rgba(50,50,93,.06)}
+  .s-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+  .s-title{font-weight:900;display:flex;align-items:center;gap:10px}
+  .s-toggle{width:36px;height:36px;border-radius:12px;display:grid;place-items:center}
+  .s-toggle i{transition:transform var(--tr)}
+  .section.collapsed .s-toggle i{transform:rotate(180deg)}
+  .s-body{padding:0 16px 16px;max-height:1200px;opacity:1;transform:none;transition:max-height .6s var(--tr),opacity var(--tr),transform var(--tr)}
+  .section.collapsed .s-body{max-height:0;opacity:0;transform:translateY(-6px)}
+
+  /* cards */
+  .grid{display:grid;gap:14px}
+  .card{border-radius:16px;overflow:hidden}
+  .inner{padding:14px}
+  .title{margin:0 0 8px;font-weight:800}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--ink-2)}
+  body.dark .row{color:var(--ink-2D)}
+  .pill{padding:6px 10px;border-radius:999px;font-size:12px}
+  .video{border-top:1px dashed var(--line);padding:10px}
+  video{width:100%;border-radius:12px}
+</style>
+</head>
+<body>
+  <header class="top glass">
+    <div class="logo">PERSONAL</div>
+    <div class="actions">
+      <div class="weather-mini glass"><i class="fa-solid fa-cloud-sun"></i><span class="w-temp" id="wTemp">--°</span></div>
+      <button id="themeBtn" class="gbtn glass"><i class="fa-solid fa-moon"></i></button>
+      <button id="spotBtn" class="gbtn glass"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- seção exemplo -->
+    <section class="section glass collapsed" id="sec-quads">
+      <div class="s-head">
+        <h3 class="s-title"><i class="fa-solid fa-dumbbell"></i> Treino de Quadríceps</h3>
+        <button class="s-toggle gbtn glass" data-sec="quads"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <div class="s-body">
+        <div class="grid">
+          <article class="card glass">
+            <div class="inner">
+              <h4 class="title">Agachamento Sumô com Halteres</h4>
+              <div class="row">
+                <span class="pill glass"><i class="fa-solid fa-dumbbell"></i> 3×10/10/10</span>
+                <span class="pill glass"><i class="fa-solid fa-weight-hanging"></i> 0kg</span>
+                <span class="pill glass"><i class="fa-solid fa-clock"></i> 60s</span>
+              </div>
+            </div>
+            <div class="video"><video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4" controls></video></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- spotlight -->
+  <div class="spot" id="spot">
+    <div class="spot-panel glass">
+      <input class="spot-input glass" placeholder="Buscar exercícios…"/>
+    </div>
+  </div>
+
+<script>
+/* tema */
+const themeBtn=document.getElementById('themeBtn');
+function setTheme(d){document.body.classList.toggle('dark',d);themeBtn.innerHTML=d?'<i class="fa-solid fa-sun"></i>':'<i class="fa-solid fa-moon"></i>';localStorage.setItem('theme',d?'dark':'light');}
+setTheme(localStorage.getItem('theme')==='dark');
+themeBtn.onclick=()=>setTheme(!document.body.classList.contains('dark'));
+
+/* spotlight */
+const spot=document.getElementById('spot');const spotBtn=document.getElementById('spotBtn');
+spotBtn.onclick=()=>spot.classList.add('on');spot.onclick=e=>{if(e.target===spot)spot.classList.remove('on');};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')spot.classList.remove('on');});
+
+/* accordion */
+document.querySelectorAll('.s-toggle').forEach(btn=>{
+  btn.onclick=()=>{
+    const sec=document.getElementById('sec-'+btn.dataset.sec);
+    sec.classList.toggle('collapsed');
+    btn.innerHTML=sec.classList.contains('collapsed')?'<i class="fa-solid fa-plus"></i>':'<i class="fa-solid fa-minus"></i>';
+  }
+});
+
+/* weather (mock por enquanto) */
+document.getElementById('wTemp').textContent='28°';
+</script>
+</body>
+</html>
