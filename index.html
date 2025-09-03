@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PERSONAL — Preview Completo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+  --bg:#f8f9fc; --panel:#fff; --ink:#111; --ink-2:#666;
+  --bgD:#0f1116; --panelD:#181a20; --inkD:#eee; --ink-2D:#aaa;
+  --tone-quad:rgba(90,141,255,.15);
+  --tone-post:rgba(36,197,140,.15);
+  --tone-upper:rgba(168,96,255,.15);
+  --tone-back:rgba(255,166,76,.15);
+  --r:16px; --t:.3s cubic-bezier(.2,.9,.2,1);
+}
+body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--ink);transition:var(--t)}
+body.dark{background:var(--bgD);color:var(--inkD)}
+.glass{background:rgba(255,255,255,.6);backdrop-filter:blur(10px);border-radius:var(--r)}
+body.dark .glass{background:rgba(24,26,32,.6)}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px;position:sticky;top:0;z-index:20}
+.actions{display:flex;gap:10px}
+button{cursor:pointer;border:none;background:none}
+.gbtn{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;transition:var(--t)}
+.gbtn:hover{background:rgba(255,255,255,.2)}
+section{margin:16px 0;border-radius:20px;overflow:hidden}
+.s-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;font-weight:700}
+.s-body{max-height:0;overflow:hidden;transition:max-height .6s ease}
+section.open .s-body{max-height:2000px}
+.progress{height:6px;border-radius:6px;overflow:hidden;margin:0 12px 10px;background:rgba(0,0,0,.1)}
+.progress-bar{height:100%;width:0;background:#4f9df9;transition:width .4s}
+.grid{display:grid;gap:12px;padding:0 12px 12px}
+@media(min-width:800px){.grid{grid-template-columns:repeat(2,1fr)}}
+.card{padding:12px;border-radius:16px;transition:var(--t)}
+.card.done{opacity:.7;position:relative}
+.card.done::after{content:"✅";position:absolute;top:10px;right:10px}
+.card h4{margin:0 0 6px}
+.meta{font-size:14px;color:var(--ink-2)}
+body.dark .meta{color:var(--ink-2D)}
+.note-btn{float:right;font-size:14px;opacity:.7}
+.note-badge{color:orange;margin-left:4px}
+.compact .video{display:none}
+.video video{width:100%;border-radius:12px}
+.progress-week{padding:10px;text-align:center;font-weight:700}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:12px;opacity:0;transition:.3s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header class="glass">
+  <div><b>PERSONAL</b></div>
+  <div class="actions">
+    <button id="modeBtn" class="gbtn" title="Compacto/Expandido"><i class="fa-solid fa-list"></i></button>
+    <button id="themeBtn" class="gbtn" title="Tema"><i class="fa-solid fa-moon"></i></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="quad">
+    <div class="s-head" style="background:var(--tone-quad)">
+      <span>Treino de Quadríceps</span>
+      <button class="gbtn toggle"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="progress"><div class="progress-bar"></div></div>
+    <div class="s-body"><div class="grid"></div></div>
+  </section>
+
+  <section id="post">
+    <div class="s-head" style="background:var(--tone-post)">
+      <span>Posterior & Glúteo</span>
+      <button class="gbtn toggle"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="progress"><div class="progress-bar"></div></div>
+    <div class="s-body"><div class="grid"></div></div>
+  </section>
+
+  <section id="upper">
+    <div class="s-head" style="background:var(--tone-upper)">
+      <span>Peito, Tríceps & Bíceps</span>
+      <button class="gbtn toggle"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="progress"><div class="progress-bar"></div></div>
+    <div class="s-body"><div class="grid"></div></div>
+  </section>
+
+  <section id="back">
+    <div class="s-head" style="background:var(--tone-back)">
+      <span>Ombro & Costas</span>
+      <button class="gbtn toggle"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    <div class="progress"><div class="progress-bar"></div></div>
+    <div class="s-body"><div class="grid"></div></div>
+  </section>
+</main>
+
+<div class="progress-week glass" id="weekProgress">🔥 0 treinos concluídos</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const themeBtn=document.getElementById('themeBtn');
+themeBtn.onclick=()=>{document.body.classList.toggle('dark')};
+
+document.querySelectorAll('.toggle').forEach(btn=>{
+  btn.onclick=()=>{
+    const sec=btn.closest('section');
+    sec.classList.toggle('open');
+    btn.innerHTML=sec.classList.contains('open')?'<i class="fa-solid fa-minus"></i>':'<i class="fa-solid fa-plus"></i>';
+  };
+});
+
+const DATA={
+  quad:[{n:"Agachamento Sumô",s:"3x10/10/10",c:"0kg",v:""}],
+  post:[{n:"Afundo Barra",s:"3x12",c:"0kg",v:""}],
+  upper:[{n:"Tríceps Corda",s:"3x15",c:"0kg",v:""}],
+  back:[{n:"Remada Baixa",s:"3x10/8/6",c:"0kg",v:""}]
+};
+
+function render(){
+  Object.entries(DATA).forEach(([sec,arr])=>{
+    const grid=document.querySelector(`#${sec} .grid`);
+    grid.innerHTML="";
+    arr.forEach((it,i)=>{
+      const note=localStorage.getItem(`note-${sec}-${i}`)||"";
+      const done=localStorage.getItem(`done-${sec}-${i}`)==="1";
+      const card=document.createElement('div');
+      card.className="card glass"+(done?" done":"");
+      card.innerHTML=`<h4>${it.n} <button class="note-btn">📝</button>${note?"<span class='note-badge'>🔔</span>":""}</h4>
+        <div class="meta">${it.s} — ${it.c}</div>
+        <div class="video">${it.v?`<video src="${it.v}" controls></video>`:""}</div>
+        <button class="gbtn finish">Concluir</button>`;
+      grid.appendChild(card);
+      card.querySelector('.finish').onclick=()=>{
+        localStorage.setItem(`done-${sec}-${i}`,"1");
+        card.classList.add('done');
+        updateProgress(sec);
+        weekProgress();
+        toast("Exercício concluído ✅");
+      };
+      card.querySelector('.note-btn').onclick=()=>{
+        const txt=prompt("Sua nota:",note);
+        if(txt!==null){localStorage.setItem(`note-${sec}-${i}`,txt);render(); }
+      };
+    });
+    updateProgress(sec);
+  });
+}
+render();
+
+function updateProgress(sec){
+  const arr=DATA[sec];
+  const done=arr.filter((_,i)=>localStorage.getItem(`done-${sec}-${i}`)==="1").length;
+  const bar=document.querySelector(`#${sec} .progress-bar`);
+  bar.style.width=(done/arr.length*100)+"%";
+}
+
+function weekProgress(){
+  let total=0,done=0;
+  Object.entries(DATA).forEach(([sec,arr])=>{
+    total+=arr.length;
+    arr.forEach((_,i)=>{if(localStorage.getItem(`done-${sec}-${i}`)==="1")done++;});
+  });
+  const el=document.getElementById('weekProgress');
+  el.textContent=`🔥 ${done}/${total} exercícios concluídos`;
+  if(done===total){confetti();toast("🏆 Semana concluída!");}
+}
+weekProgress();
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1500);
+}
+
+function confetti(){
+  // mini efeito confete (emoji fallback)
+  for(let i=0;i<15;i++){
+    setTimeout(()=>{
+      const e=document.createElement('div');
+      e.textContent="🎉";e.style.position="fixed";e.style.left=Math.random()*100+"%";e.style.top="-20px";e.style.fontSize="20px";e.style.animation="fall 2s linear";
+      document.body.appendChild(e);
+      setTimeout(()=>e.remove(),2000);
+    },i*100);
+  }
+}
+const style=document.createElement('style');
+style.textContent=`@keyframes fall{to{transform:translateY(100vh)}}`;
+document.head.appendChild(style);
+
+document.getElementById('modeBtn').onclick=()=>{
+  document.body.classList.toggle('compact');
+  document.getElementById('modeBtn').innerHTML=document.body.classList.contains('compact')?'<i class="fa-solid fa-video"></i>':'<i class="fa-solid fa-list"></i>';
+};
+</script>
+</body>
+</html>
