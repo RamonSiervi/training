@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PERSONAL — Treinos</title>
+<style>
+  :root{
+    --bg: #f6f8fb;
+    --text: #1b1f2a;
+    --muted:#667085;
+    --glass: rgba(255,255,255,0.55);
+    --glass-strong: rgba(255,255,255,0.7);
+    --card: rgba(255,255,255,0.65);
+    --accent: #7b6cff;
+    --accent-2:#5ec2ff;
+    --success:#30d7a9;
+    --danger:#ff6b6b;
+    --radius: 18px;
+    --shadow: 0 8px 20px rgba(24,39,75,.08), 0 1px 2px rgba(0,0,0,.04);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text);overflow-x:hidden;}
+  header{position:sticky;top:0;z-index:100;padding:10px 16px;display:flex;align-items:center;gap:12px;justify-content:space-between;background:var(--glass);backdrop-filter:blur(14px) saturate(160%);border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;cursor:pointer;}
+  .avatar{width:46px;height:46px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.6);flex-shrink:0;}
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block;}
+  .actions{display:flex;align-items:center;gap:8px;}
+  .bubble-btn{position:relative;padding:10px;border-radius:14px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.4);cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;justify-content:center;}
+  .bubble-btn svg{width:20px;height:20px;}
+  .tooltip{position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:4px 8px;border-radius:6px;font-size:.7rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;}
+  .bubble-btn:hover .tooltip{opacity:1;}
+  .dash{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px;margin:0 10px;}
+  .stat{background:var(--glass);backdrop-filter:blur(12px);border-radius:var(--radius);padding:10px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+  .stat h4{font-size:.9rem;font-weight:800;}
+  .stat small{color:var(--muted);display:block;margin-top:2px;}
+  .container{max-width:1000px;margin:6px auto 20px;padding:0 10px;}
+  .section{margin:12px 0;border-radius:var(--radius);background:var(--glass);backdrop-filter:blur(12px);box-shadow:var(--shadow);}
+  .section-header{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none;}
+  .section-title{display:flex;align-items:center;gap:8px;font-weight:900;}
+  .badge{padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-size:.7rem;font-weight:800;}
+  .toggle{width:24px;height:24px;display:grid;place-items:center;border-radius:10px;background:var(--glass-strong);border:1px solid rgba(255,255,255,.55);transition:transform .25s ease;}
+  .toggle.open svg{transform:rotate(180deg);}
+  .section-body{max-height:0;overflow:hidden;transition:max-height .5s ease,opacity .3s ease;opacity:0;padding:0 10px;}
+  .section.open .section-body{opacity:1;padding:10px;}
+  .grid{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media (min-width:720px){.grid{grid-template-columns:1fr 1fr;}}
+  .card{position:relative;background:var(--card);border-radius:16px;padding:10px;box-shadow:var(--shadow);overflow:hidden;}
+  .card h5{font-size:.95rem;margin-bottom:4px;}
+  .meta{color:var(--muted);font-size:.82rem;margin-bottom:8px;}
+  video{width:100%;border-radius:12px;margin-bottom:8px;}
+  .check{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:8px;background:var(--glass);border:1px solid rgba(255,255,255,.6);display:grid;place-items:center;cursor:pointer;}
+  .check svg{width:14px;height:14px;opacity:.35;}
+  .card.done{outline:2px solid var(--success);box-shadow:0 0 0 3px rgba(48,215,169,.15);}
+  .card.done .check{background:linear-gradient(135deg,#2ee5b3,#19c795);}
+  .card.done .check svg{opacity:1;fill:#fff;}
+  .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;}
+  .btn{border:0;border-radius:12px;padding:8px 12px;background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;cursor:pointer;box-shadow:var(--shadow);}
+  .btn.secondary{background:var(--glass-strong);color:var(--text);}
+  .btn.ghost{background:transparent;border:1px solid rgba(0,0,0,.08);color:var(--text);}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;background:var(--glass-strong);backdrop-filter:blur(12px);padding:8px 12px;border-radius:10px;box-shadow:var(--shadow);display:none;font-size:.85rem;}
+  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.25);z-index:200;}
+  .modal-inner{width:min(520px,92vw);background:var(--glass);backdrop-filter:blur(14px);border-radius:16px;padding:14px;box-shadow:var(--shadow);}
+  .drop{border:2px dashed rgba(0,0,0,.2);border-radius:12px;padding:20px;text-align:center;color:var(--muted);cursor:pointer;}
+  footer{text-align:center;color:var(--muted);font-size:.8rem;padding:20px 0;}
+  /* Focus mode */
+  body.focus .dash{display:none;}
+  body.focus main .section{opacity:.08;pointer-events:none;}
+  body.focus .section .card.current{opacity:1 !important;pointer-events:auto !important;}
+  body.focus header .brand span{opacity:.6;}
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand" id="avatarUpload">
+      <div class="avatar"><img id="avatarImg" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" alt="avatar"/></div>
+      <span>PERSONAL</span>
+    </div>
+    <div class="actions">
+      <button class="bubble-btn" id="focusBtn" aria-label="Modo Foco">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v10M7 12h10"></path></svg>
+        <span class="tooltip">Modo Foco</span>
+      </button>
+      <button class="bubble-btn" id="uploadBtn" aria-label="Enviar foto">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-3h8l2 3h3a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span class="tooltip">Enviar foto</span>
+      </button>
+      <button class="bubble-btn" id="resetBtn" aria-label="Resetar progresso">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+        <span class="tooltip">Resetar progresso</span>
+      </button>
+      <button class="bubble-btn" id="historyBtn" aria-label="Histórico semanal">
+        <svg viewBox="0 0 24 24"><path d="M3 4h18M3 12h18M3 20h18"/></svg>
+        <span class="tooltip">Histórico</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- DASH MINI -->
+  <section class="dash">
+    <div class="stat">
+      <svg class="progress-circle" viewBox="0 0 36 36" width="54" height="54">
+        <path d="M18 2 a 16 16 0 1 1 0 32 a 16 16 0 1 1 0 -32" stroke="#e6e9ef" stroke-width="4" fill="none"/>
+        <path id="progPath" d="M18 2 a 16 16 0 1 1 0 32 a 16 16 0 1 1 0 -32" stroke="url(#grad)" stroke-width="4" fill="none" stroke-dasharray="100" stroke-dashoffset="100"/>
+        <defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="var(--accent)"/><stop offset="100%" stop-color="var(--accent-2)"/></linearGradient></defs>
+      </svg>
+      <div><h4><span id="doneCount">0</span> concluídos</h4><small>Esta semana</small></div>
+    </div>
+    <div class="stat">
+      <svg class="spark" viewBox="0 0 120 36" width="80" height="24"><polyline id="sparkline" fill="none" stroke="url(#grad)" stroke-width="2" points="0,26 15,22 30,28 45,18 60,20 75,12 90,16 105,10 120,14"/></svg>
+      <div><h4>Progresso</h4><small>Últimos 9 treinos</small></div>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- ============= SEÇÃO 1: POSTERIOR & GLÚTEO ============= -->
+    <section class="section open">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="badge">Posterior & Glúteo</span><span>Treino</span></div>
+        <div class="toggle open"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></div>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <!-- 1 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Agachamento Sumô com Halteres</h5>
+            <div class="meta">Série: 3x10/10/10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 2 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Leg Press 45</h5>
+            <div class="meta">Série: 4x15 pés colados + 15 afastados • Carga: 12kg • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-leg-press-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 3 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Adução de Quadril Máquina</h5>
+            <div class="meta">Série: 3x10/10/10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-adduction-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 4 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Cadeira Flexora</h5>
+            <div class="meta">Série: 3x10/10/10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-seated-leg-curl-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 5 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Cadeira Flexora Unilateral</h5>
+            <div class="meta">Série: 3x10/10/10/10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Seated_Leg_Curl_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 6 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Panturrilha no Step</h5>
+            <div class="meta">Série: 4x15 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-calves-stretch-variation-3-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 7 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Abdominal Canivete</h5>
+            <div class="meta">Série: 4x15 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-suitcase-crunch-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+          <!-- 8 -->
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Esteira Caminhada</h5>
+            <div class="meta">Série: 30 reps • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= SEÇÃO 2: QUADRÍCEPS ============= -->
+    <section class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="badge">Quadríceps</span><span>Treino</span></div>
+        <div class="toggle"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></div>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Agachamento com Halteres</h5>
+            <div class="meta">Série: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-rack-squat-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Abdução de Quadril Máquina</h5>
+            <div class="meta">Série: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-abduction-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Elíptico</h5>
+            <div class="meta">Séries: 25 reps • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-elliptical-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Afundo com Barra Livre</h5>
+            <div class="meta">Séries: 3x12, 3x10, 2x8 • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-lunge-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Agachamento Sumô no Step com Halteres</h5>
+            <div class="meta">Séries: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/DB_Sumo_Squat_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Abdução de Quadril Máquina</h5>
+            <div class="meta">Séries: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Hip_Abduction_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Cadeira Extensora</h5>
+            <div class="meta">Séries: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-leg-extension-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Cadeira Extensora Unilateral</h5>
+            <div class="meta">Séries: 3x10+10+10 Drop • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Single_Leg_Extension_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Leg Press 45 Unilateral</h5>
+            <div class="meta">Séries: 3x12, 3x10, 2x8 • Carga: 0kg • Intervalo: 60s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/machines/_1080/Leg_Press_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= SEÇÃO 3: PEITO, TRÍCEPS E BÍCEPS ============= -->
+    <section class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="badge">Peito, Tríceps e Bíceps</span><span>Treino</span></div>
+        <div class="toggle"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></div>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Alongamento de Ombros e Tríceps II</h5>
+            <div class="meta">Séries: 3x20 • Carga: 0kg • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-shoulders-stretch-variation-1-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Bike Spinning Sentada</h5>
+            <div class="meta">Séries: 40 reps • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-stationary-bike-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Abdominal Supra Solo</h5>
+            <div class="meta">Séries: 5x15 • Carga: 0kg • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/Crunch_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Tríceps Unilateral na Polia Alta</h5>
+            <div class="meta">Séries: 3x15 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-single-arm-rope-pushdown-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Alongamento de Peitoral (Espaldar)</h5>
+            <div class="meta">Séries: 3x15 • Carga: 0kg • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-chest-stretch-variation-1-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Mobilidade de Ombro III</h5>
+            <div class="meta">Série: 3x20 • Carga: 0kg • Intervalo: 40s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Recovery-thoracic-extensions-via-shoulder-flexion-foam-roller-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Rosca Alternada com Halteres</h5>
+            <div class="meta">Séries: 3x15 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-curl-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Tríceps na Polia com Corda</h5>
+            <div class="meta">Séries: 3x15 lento + 15 curto • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-push-down-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Tríceps Unilateral na Polia Alta</h5>
+            <div class="meta">Séries: 3x15 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-single-arm-rope-pushdown-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Crucifixo com Halteres</h5>
+            <div class="meta">Séries: 4x12 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-fly-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Crucifixo Inclinado com Halteres</h5>
+            <div class="meta">Séries: 4x12 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-chest-flys-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Rosca Martelo com Halteres</h5>
+            <div class="meta">Séries: 4x12 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-hammer-curl-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============= SEÇÃO 4: OMBRO & COSTA ============= -->
+    <section class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-title"><span class="badge">Ombro & Costa</span><span>Treino</span></div>
+        <div class="toggle"><svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 5v14M5 12h14"/></svg></div>
+      </div>
+      <div class="section-body">
+        <div class="grid">
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Puxada Alta (pegada neutra)</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-pulldown-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Abdominal Canivete</h5>
+            <div class="meta">Séries: 3x12 • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/bodyweight/_1080/V-Up_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Esteira Caminhada</h5>
+            <div class="meta">Séries: 40 reps • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Cardio-treadmill-walk-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Elevação Lateral Unilateral Sentado</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-seated-overhead-press-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Elevação Frontal Alternada</h5>
+            <div class="meta">Séries: 3x12 • Carga: 4–6kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-front-raise-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Desenvolvimento com Halteres (pegada neutra)</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/dumbbells/_1080/Neutral_Grip_DB_Press_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Puxada Neutra (triângulo)</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/cables/_1080/Seated_Row_V_Grip_FR_1080.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Remada Baixa Triângulo</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-seated-cable-row-front.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+
+          <article class="card">
+            <div class="check" onclick="toggleDone(event,this)"><svg viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5'/></svg></div>
+            <h5>Puxada Aberta Barra Reta</h5>
+            <div class="meta">Séries: 3x10/8/6 Drop • Carga: 0kg • Intervalo: 30s</div>
+            <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-pulldown-side.mp4" controls playsinline></video>
+            <div class="row"><button class="btn ghost" onclick="openTimer(this)">⏱ Intervalo</button></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL UPLOAD -->
+  <div id="uploadModal" class="modal"><div class="modal-inner">
+    <h3>Enviar foto</h3>
+    <form id="uploadForm">
+      <div id="drop" class="drop">Arraste e solte a imagem ou <strong>clique</strong><input type="file" name="foto" accept="image/*" required style="display:none;" /></div>
+      <div id="preview" style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;"></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:10px;">
+        <button type="button" class="btn secondary" onclick="closeUpload()">Cancelar</button>
+        <button type="submit" class="btn">Enviar</button>
+      </div>
+    </form>
+  </div></div>
+
+  <!-- MODAL HISTÓRICO -->
+  <div id="historyModal" class="modal"><div class="modal-inner">
+    <h3>Histórico semanal</h3><ul id="historyList" style="margin:10px 0 14px 16px;line-height:1.8;"></ul>
+    <div class="row"><button class="btn secondary" onclick="closeHistory()">Fechar</button></div>
+  </div></div>
+
+  <!-- MODAL POMODORO -->
+  <div id="timerModal" class="modal"><div class="modal-inner" style="text-align:center">
+    <h3 id="timerTitle" style="margin-bottom:8px;">Intervalo</h3>
+    <div id="timerDisplay" style="font-size:48px;font-weight:900;letter-spacing:.5px;margin:8px 0 4px;">00:30</div>
+    <div style="color:var(--muted);margin-bottom:10px;" id="timerHint">Toque para iniciar / pausar</div>
+    <div class="row" style="justify-content:center;">
+      <button class="btn" id="timerStartPause">Iniciar</button>
+      <button class="btn secondary" id="timerCancel">Cancelar</button>
+    </div>
+  </div></div>
+
+  <div id="toast" class="toast"></div>
+  <footer>© 2025 PERSONAL — Soft UI</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+  // ====== Util ======
+  const qs = (s,el=document)=> el.querySelector(s);
+  const qsa = (s,el=document)=> [...el.querySelectorAll(s)];
+  function showToast(msg){const t=qs('#toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',1800);}
+
+  // ====== EmailJS (upload foto) ======
+  emailjs.init("NoSQUcbjAnuG0LhrW"); // Public Key
+  const uploadModal = qs('#uploadModal'); const drop = qs('#drop'); const input = drop.querySelector('input');
+  qs('#uploadBtn').addEventListener('click',()=> uploadModal.style.display='flex');
+  function closeUpload(){ uploadModal.style.display='none'; }
+  drop.addEventListener('click',()=> input.click());
+  input.addEventListener('change', renderPreview);
+  function renderPreview(){
+    const pv = qs('#preview'); pv.innerHTML='';
+    [...input.files].forEach(file=>{ const url=URL.createObjectURL(file); const img=new Image(); img.src=url; img.style.cssText='width:80px;height:80px;object-fit:cover;border-radius:10px;'; pv.appendChild(img); });
+  }
+  qs('#uploadForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if(!input.files.length){ showToast('⚠️ Escolha uma imagem'); return; }
+    const file = input.files[0];
+    const reader = new FileReader();
+    reader.onload = function(evt){
+      emailjs.send("service_vg6xd6v","template_je6fsmc",{ foto: evt.target.result, nome: "Ramon" })
+        .then(()=>{ showToast('📤 Foto enviada!'); closeUpload(); }, err=>{ showToast('⚠️ Erro ao enviar'); console.error(err); });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ====== Avatar (logo/foto fixa) ======
+  const avatar = qs('#avatarUpload'); const avatarImg = qs('#avatarImg');
+  const savedAvatar = localStorage.getItem('avatarData');
+  if(savedAvatar) avatarImg.src = savedAvatar;
+  avatar.addEventListener('click', async ()=>{
+    const ipt = document.createElement('input'); ipt.type = 'file'; ipt.accept = 'image/*';
+    ipt.onchange = ()=>{
+      const file = ipt.files[0]; if(!file) return;
+      const r = new FileReader();
+      r.onload = e => { avatarImg.src = e.target.result; localStorage.setItem('avatarData', e.target.result); showToast('🖼️ Foto atualizada!'); };
+      r.readAsDataURL(file);
+    };
+    ipt.click();
+  });
+
+  // ====== History semanal ======
+  const historyModal = qs('#historyModal');
+  qs('#historyBtn').addEventListener('click',()=>{ historyModal.style.display='flex'; renderHistory(); });
+  function closeHistory(){ historyModal.style.display='none'; }
+  function addHistory(){ const dnames=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado']; const d = new Date(); const key = dnames[d.getDay()]; const hist = JSON.parse(localStorage.getItem('history')||'{}'); hist[key]=(hist[key]||0)+1; localStorage.setItem('history', JSON.stringify(hist)); }
+  function renderHistory(){ const hist = JSON.parse(localStorage.getItem('history')||'{}'); const list = qs('#historyList'); list.innerHTML=''; ['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'].forEach(d=>{ const li=document.createElement('li'); li.textContent = `${d}: ${hist[d]||0} exercícios`; list.appendChild(li); }); }
+
+  // ====== Progresso ======
+  function saveProgress(){ const doneIds = qsa('.card.done').map(c=>c.querySelector('h5').innerText); localStorage.setItem('doneCards', JSON.stringify(doneIds)); }
+  function loadProgress(){ const done = JSON.parse(localStorage.getItem('doneCards')||'[]'); qsa('.card').forEach(c=>{ if(done.includes(c.querySelector('h5').innerText)) c.classList.add('done'); }); }
+  loadProgress();
+  function updateDoneCount(delta){ const el = qs('#doneCount'); let val = parseInt(el.textContent,10)+delta; if(val<0) val=0; el.textContent=val; const pct=Math.min(100,(val/10)*100); qs('#progPath').style.strokeDashoffset=(100-pct); }
+  qsa('.check').forEach(chk=>{
+    const card = chk.closest('.card');
+    if(card.classList.contains('done')) updateDoneCount(1);
+  });
+  qs('#resetBtn').addEventListener('click', ()=>{ qsa('.card.done').forEach(c=>c.classList.remove('done')); qs('#doneCount').textContent='0'; qs('#progPath').style.strokeDashoffset=100; localStorage.removeItem('doneCards'); showToast('✔️ Progresso resetado'); });
+
+  function toggleDone(ev, el){
+    ev.stopPropagation();
+    const card = el.closest('.card');
+    const was = card.classList.toggle('done');
+    updateDoneCount(was ? 1 : -1);
+    if(was) addHistory();
+    saveProgress();
+  }
+
+  // ====== Abrir/fechar seções ======
+  function toggleSection(header){
+    const section = header.closest('.section');
+    const body = section.querySelector('.section-body');
+    const icon = header.querySelector('.toggle');
+    const open = section.classList.toggle('open');
+    if(open){ icon.classList.add('open'); body.style.maxHeight = body.scrollHeight + 'px'; }
+    else { icon.classList.remove('open'); body.style.maxHeight = 0; }
+  }
+
+  // ====== Modo Foco ======
+  const focusBtn = qs('#focusBtn');
+  let focusEnabled = JSON.parse(localStorage.getItem('focusEnabled')||'false');
+  function applyFocus(){ document.body.classList.toggle('focus', !!focusEnabled); }
+  applyFocus();
+  focusBtn.addEventListener('click', ()=>{ focusEnabled = !focusEnabled; localStorage.setItem('focusEnabled', JSON.stringify(focusEnabled)); applyFocus(); showToast(focusEnabled? '🎯 Modo Foco ON' : '🎯 Modo Foco OFF'); });
+
+  // ====== Pomodoro / Temporizador ======
+  const timerModal = qs('#timerModal');
+  const timerDisplay = qs('#timerDisplay');
+  const timerTitle = qs('#timerTitle');
+  const btnStartPause = qs('#timerStartPause');
+  const btnCancel = qs('#timerCancel');
+  let timer=null, remaining=0, running=false, total=0, currentCard=null;
+  let audioCtx=null;
+
+  function fmt(s){ s = Math.max(0, s|0); const m = Math.floor(s/60), x = (s%60); return (m<10?'0':'')+m+':' + (x<10?'0':'')+x; }
+  function getIntervalSecondsFromCard(card){
+    const meta = card.querySelector('.meta')?.innerText || '';
+    const m = meta.match(/Intervalo:\s*(\d+)\s*s?/i);
+    return m ? parseInt(m[1],10) : 60;
+  }
+
+  function openTimer(btn){
+    const card = btn.closest('.card');
+    currentCard = card;
+    qsa('.card').forEach(c=>c.classList.remove('current'));
+    card.classList.add('current');
+    const secs = getIntervalSecondsFromCard(card);
+    total = remaining = secs;
+    timerTitle.textContent = card.querySelector('h5').innerText;
+    timerDisplay.textContent = fmt(remaining);
+    running=false; btnStartPause.textContent='Iniciar';
+    timerModal.style.display='flex';
+    if(focusEnabled){ document.body.classList.add('focus'); }
+  }
+
+  function vibrateStart(){ if(navigator.vibrate) navigator.vibrate(150); }
+  function vibrateFive(){ if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]); }
+  function vibrateEnd(){ if(navigator.vibrate) navigator.vibrate([300,150,300,150,400]); }
+
+  function beep(ms=180, freq=880){
+    try{
+      if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      o.type='sine'; o.frequency.value=freq;
+      o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.3, audioCtx.currentTime+0.02);
+      o.start();
+      setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime+0.02); o.stop(); }, ms);
+    }catch(e){ /* ignore */ }
+  }
+
+  function tick(){
+    remaining--;
+    timerDisplay.textContent = fmt(remaining);
+    if(remaining === total-1){ vibrateStart(); }           // início (logo após começar)
+    if(remaining === 5){ vibrateFive(); beep(220, 1200); } // 5s finais
+    if(remaining <= 0){
+      clearInterval(timer); running=false; remaining=0;
+      timerDisplay.textContent = '00:00';
+      vibrateEnd(); beep(220, 880); setTimeout(()=>beep(220, 660), 250);
+      showToast('✅ Intervalo concluído!');
+      timerModal.style.display='none';
+      if(currentCard){ currentCard.classList.remove('current'); }
+      if(focusEnabled){ document.body.classList.remove('focus'); }
+    }
+  }
+
+  function start(){
+    if(!running){
+      // iOS precisa de resume no primeiro toque
+      try{ audioCtx && audioCtx.state==='suspended' && audioCtx.resume(); }catch(e){}
+      running=true;
+      btnStartPause.textContent='Pausar';
+      tick(); // atualiza já
+      timer = setInterval(tick, 1000);
+    }
+  }
+  function pause(){
+    if(running){ clearInterval(timer); running=false; btnStartPause.textContent='Retomar'; }
+  }
+  function toggleStartPause(){ running ? pause() : start(); }
+
+  btnStartPause.addEventListener('click', toggleStartPause);
+  btnCancel.addEventListener('click', ()=>{
+    clearInterval(timer); running=false; timerModal.style.display='none';
+    if(currentCard){ currentCard.classList.remove('current'); }
+    if(focusEnabled){ document.body.classList.remove('focus'); }
+  });
+
+  // Fechar modal clicando fora
+  [timerModal, uploadModal, historyModal].forEach(m => m.addEventListener('click', (e)=>{ if(e.target===m) m.style.display='none'; }));
+
+  </script>
+</body>
+</html>
