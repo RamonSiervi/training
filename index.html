@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PERSONAL — Reimagined UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f7fb;
+    --glass: rgba(255,255,255,.72);
+    --glass-2: rgba(255,255,255,.55);
+    --line: rgba(15,23,42,.08);
+    --text:#0b1220;
+    --muted:#667085;
+    --accent:#6d6df7;
+    --accent-2:#9b6df7;
+    --radius:20px;
+    --shadow: 0 20px 50px rgba(11,18,32,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  img{max-width:100%;display:block}
+  button{font-family:inherit}
+  /* Generic */
+  .hide{display:none !important}
+  .container{max-width:1240px;margin:0 auto;padding:24px}
+  .pill{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;border-radius:999px;border:1px solid transparent; cursor:pointer; font-weight:700}
+  .btn.primary{color:#fff;background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 16px 40px rgba(109,109,247,.35)}
+  .btn.ghost{background:var(--glass-2);border:1px solid var(--line)}
+  .btn:active{transform:translateY(1px)}
+  /* Screen switch */
+  .screen{min-height:100dvh;display:grid;place-items:center;padding:24px}
+  /* ===== Login minimal ===== */
+  .login-card{width:100%;max-width:480px; padding:34px 26px; border-radius:28px; background:#fff; box-shadow:var(--shadow); position:relative; overflow:hidden}
+  .login-card::after{content:""; position:absolute; inset:-40% -40% auto auto; width:340px; height:340px; border-radius:40px; background:radial-gradient(60% 60% at 50% 40%, #fde68a 0%, #fca5a5 55%, #93c5fd 100%); filter: blur(60px); opacity:.28; pointer-events:none}
+  .login-illus{width:170px;height:170px;border-radius:40px;display:grid;place-items:center;margin:12px auto 8px;background:radial-gradient(circle at 50% 40%, #eef2ff 0, #fff 70%); border:1px solid #eef2ff}
+  .login-title{text-align:center;margin:10px 0 8px;font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .login-sub{color:var(--muted);text-align:center;margin:0 0 18px}
+  .login-actions{display:flex;flex-direction:column;gap:12px}
+  /* ===== App Header (glass search bar) ===== */
+  header.app{position:sticky;top:0;z-index:10; backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); background:rgba(255,255,255,.7); border-bottom:1px solid var(--line)}
+  .app .top{display:flex;align-items:center;gap:18px;justify-content:space-between;padding:14px 24px}
+  .brand{font-weight:800;letter-spacing:.2px}
+  .searchbar{flex:1; display:flex;align-items:center;gap:10px; padding:12px 16px; border-radius:999px; background:var(--glass); border:1px solid var(--line); max-width:680px}
+  .searchbar input{flex:1;border:none;outline:none;background:transparent;font-size:14px}
+  .icons{display:flex;align-items:center;gap:12px}
+  .avatar{width:34px;height:34px;border-radius:999px;background:url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop') center/cover no-repeat;border:2px solid #fff;box-shadow:0 6px 18px rgba(0,0,0,.08)}
+  /* ===== Hero (spotlight like the reference) ===== */
+  .hero{border-radius:26px;overflow:hidden; position:relative; box-shadow:var(--shadow)}
+  .hero-media{height:420px; background:#000; position:relative}
+  .hero-media img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:saturate(110%) contrast(105%)}
+  .hero-overlay{position:absolute; inset:0; display:flex; align-items:flex-end; background:linear-gradient(120deg, rgba(2,6,23,.55) 10%, rgba(2,6,23,.12) 60%, rgba(2,6,23,0) 80%)}
+  .hero-content{padding:26px; color:#fff; max-width:560px}
+  .hero-content h1{font-size:34px;margin:0 0 6px}
+  .hero-content p{margin:0 0 14px; color:#e5e7eb}
+  .tags{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .tag{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.28); font-size:12px}
+  .hero-actions{display:flex; gap:10px; flex-wrap:wrap}
+  /* ===== Carousels ===== */
+  .section{margin-top:22px}
+  .section h3{margin:0 0 10px;font-size:18px;font-weight:800}
+  .carousel{position:relative}
+  .rail{display:flex;gap:12px;overflow:auto;scroll-behavior:smooth;padding-bottom:8px}
+  .rail::-webkit-scrollbar{height:10px}
+  .rail::-webkit-scrollbar-thumb{background:#e2e8f0;border-radius:999px}
+  .card{min-width:220px;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #eef2f7;box-shadow:0 10px 28px rgba(2,6,23,.06)}
+  .thumb{height:130px;object-fit:cover;width:100%}
+  .card .content{padding:10px 12px}
+  .card .content h4{margin:0 0 6px;font-size:14px}
+  .card .content p{margin:0;color:var(--muted);font-size:12px}
+  .nav{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+  .nav button{pointer-events:auto;border:none;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(12px); width:36px;height:36px;border-radius:50%;cursor:pointer}
+  /* ===== Sidebar panels ===== */
+  .grid{display:grid; grid-template-columns: 1.65fr 1fr; gap:24px}
+  @media (max-width: 1020px){ .grid{grid-template-columns:1fr} }
+  .panel{background:var(--glass);border:1px solid var(--line);backdrop-filter: blur(12px) saturate(160%);border-radius:22px;padding:16px}
+  .panel h4{margin:0 0 10px;font-size:16px}
+  .list{display:flex;flex-direction:column;gap:12px}
+  .item{display:flex;align-items:center;gap:12px}
+  .item img{width:58px;height:58px;border-radius:12px;object-fit:cover}
+  .badge{font-size:11px;color:#0b1220;background:#eef2ff;border:1px solid #e0e7ff;border-radius:999px;padding:4px 8px}
+  /* ===== Weather small glass ===== */
+  .weather{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+  .chip{padding:8px 10px;border-radius:999px;background:var(--glass);border:1px solid var(--line)}
+  /* ===== Toast (Assistência Minimalista) ===== */
+  .toast-area{position:fixed;right:18px;bottom:18px;z-index:50; display:flex;flex-direction:column;gap:10px; pointer-events:none}
+  .toast{pointer-events:auto; min-width:260px; max-width:330px; padding:12px 14px; border-radius:14px; box-shadow:var(--shadow);
+         border:1px solid rgba(226,232,240,.9); background:#ffffff; display:flex; gap:10px; align-items:flex-start;
+         animation: slideIn .28s ease both; }
+  .toast .title{font-weight:700;margin:0 0 2px}
+  .toast .msg{margin:0;color:var(--muted);font-size:13px}
+  .toast .close{margin-left:auto;background:transparent;border:none;cursor:pointer;font-size:16px;line-height:1}
+  @keyframes slideIn{from{transform:translateY(12px);opacity:0} to{transform:translateY(0);opacity:1}}
+  @media (max-width:600px){ .toast-area{left:12px;right:12px} .toast{max-width:100%;} }
+</style>
+</head>
+<body>
+  <!-- ===== Screen 1: LOGIN MINIMAL ===== -->
+  <section id="screen-login" class="screen">
+    <div class="login-card" role="dialog" aria-modal="true">
+      <div class="login-illus">
+        <img alt="Ilustração" src="https://cdn-icons-png.flaticon.com/512/4247/4247749.png" width="110" height="110">
+      </div>
+      <h1 class="login-title">Bem-vinda(o)</h1>
+      <p class="login-sub">Toque em continuar para começar</p>
+      <div class="login-actions">
+        <button id="continueBtn" class="btn primary" aria-label="Continuar para o dashboard">Continuar</button>
+        <div class="pill" style="justify-content:center">Tema claro · Sem cadastro</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Screen 2: DASHBOARD (Reimagined Netflix Style) ===== -->
+  <header id="appHeader" class="app hide">
+    <div class="top container">
+      <div class="brand">PERSONAL</div>
+      <div class="searchbar">
+        <span>🔎</span>
+        <input placeholder="Buscar treinos, refeições e playlists..." aria-label="Buscar">
+      </div>
+      <div class="icons">
+        <button class="btn ghost" id="historyBtn" title="Histórico">Histórico</button>
+        <div class="avatar" title="Perfil"></div>
+      </div>
+    </div>
+  </header>
+
+  <main id="screen-app" class="hide" aria-live="polite">
+    <div class="container">
+      <!-- Weather inline -->
+      <div class="weather">
+        <div class="chip">☀️ Salvador, BA</div>
+        <div class="chip">26°C agora</div>
+        <div class="chip">Sensação 27°C</div>
+        <div class="chip">Vento 14 km/h</div>
+      </div>
+
+      <!-- Spotlight hero -->
+      <section class="hero" aria-label="Destaque do dia">
+        <div class="hero-media">
+          <img alt="Poster destaque" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1600&auto=format&fit=crop">
+          <div class="hero-overlay">
+            <div class="hero-content">
+              <span class="pill" style="margin-bottom:12px">NETFIT · New Trending</span>
+              <h1>Posterior &amp; Glúteo — Série Pro</h1>
+              <p>Uma sequência épica com foco em força, resistência e técnica. Perfeito para evoluir nos básicos e isolar glúteos.</p>
+              <div class="tags">
+                <span class="tag">Força</span><span class="tag">Hipertrofia</span><span class="tag">Posterior</span>
+              </div>
+              <div class="hero-actions">
+                <button class="btn primary" id="watchNow">▶️ Assistir Agora</button>
+                <button class="btn ghost">⬇️ Baixar Plano</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- thumbs rail like the reference -->
+        <div class="section" style="padding:0 8px 8px">
+          <div class="carousel">
+            <div class="rail" id="rail-hero">
+              <img class="card thumb" alt="thumb 1" src="https://images.unsplash.com/photo-1558611848-73f7eb4001a1?q=80&w=800&auto=format&fit=crop">
+              <img class="card thumb" alt="thumb 2" src="https://images.unsplash.com/photo-1517963628607-235ccdd5476a?q=80&w=800&auto=format&fit=crop">
+              <img class="card thumb" alt="thumb 3" src="https://images.unsplash.com/photo-1550345332-09e3ac987658?q=80&w=800&auto=format&fit=crop">
+              <img class="card thumb" alt="thumb 4" src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=800&auto=format&fit=crop">
+              <img class="card thumb" alt="thumb 5" src="https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?q=80&w=800&auto=format&fit=crop">
+            </div>
+            <div class="nav">
+              <button data-left="rail-hero">◀</button>
+              <button data-right="rail-hero">▶</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section>
+          <!-- Recomendados -->
+          <div class="section">
+            <h3>Treinos Recomendados</h3>
+            <div class="carousel">
+              <div class="rail" id="rail-reco">
+                <!-- cards with same pattern as file -->
+                <article class="card" data-title="Agachamento Sumô">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.jpg" alt="Agachamento Sumô">
+                  <div class="content">
+                    <h4>Agachamento Sumô</h4><p>Glúteos · Pernas</p>
+                  </div>
+                </article>
+                <article class="card" data-title="Leg Press 45">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-leg-press-front.jpg" alt="Leg Press 45">
+                  <div class="content">
+                    <h4>Leg Press 45</h4><p>Força · Volume</p>
+                  </div>
+                </article>
+                <article class="card" data-title="Adução de Quadril">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-hip-adduction-front.jpg" alt="Adução de Quadril">
+                  <div class="content">
+                    <h4>Adução de Quadril</h4><p>Isolado</p>
+                  </div>
+                </article>
+                <article class="card" data-title="Cadeira Flexora">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-seated-leg-curl-side.jpg" alt="Cadeira Flexora">
+                  <div class="content">
+                    <h4>Cadeira Flexora</h4><p>Posterior</p>
+                  </div>
+                </article>
+                <article class="card" data-title="Elevação Pélvica">
+                  <img class="thumb" src="https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=800&auto=format&fit=crop" alt="Elevação Pélvica">
+                  <div class="content">
+                    <h4>Elevação Pélvica</h4><p>Glúteo Máximo</p>
+                  </div>
+                </article>
+              </div>
+              <div class="nav">
+                <button data-left="rail-reco">◀</button>
+                <button data-right="rail-reco">▶</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inferiores -->
+          <div class="section">
+            <h3>Inferiores</h3>
+            <div class="carousel">
+              <div class="rail" id="rail-low">
+                <article class="card" data-title="Agachamento Livre">
+                  <img class="thumb" src="https://images.unsplash.com/photo-1517963628607-235ccdd5476a?q=80&w=800&auto=format&fit=crop" alt="Agachamento">
+                  <div class="content"><h4>Agachamento Livre</h4><p>Força · Técnica</p></div>
+                </article>
+                <article class="card" data-title="Avanço com Barra">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-lunge-side.jpg" alt="Avanço">
+                  <div class="content"><h4>Avanço com Barra</h4><p>Estabilidade</p></div>
+                </article>
+                <article class="card" data-title="Cadeira Extensora">
+                  <img class="thumb" src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-leg-extension-side.jpg" alt="Cadeira Extensora">
+                  <div class="content"><h4>Cadeira Extensora</h4><p>Quadríceps</p></div>
+                </article>
+                <article class="card" data-title="Stiff Halteres">
+                  <img class="thumb" src="https://images.unsplash.com/photo-1556817411-31ae72fa3ea0?q=80&w=800&auto=format&fit=crop" alt="Stiff">
+                  <div class="content"><h4>Stiff com Halteres</h4><p>Posterior</p></div>
+                </article>
+              </div>
+              <div class="nav"><button data-left="rail-low">◀</button><button data-right="rail-low">▶</button></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside>
+          <div class="panel">
+            <h4>Smart Meal Picks</h4>
+            <div class="list">
+              <div class="item">
+                <img alt="Salada Power" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400&auto=format&fit=crop">
+                <div><strong>Protein Power Salad</strong><div class="badge">280 Kcal</div></div>
+              </div>
+              <div class="item">
+                <img alt="Vegan Bowl" src="https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?q=80&w=400&auto=format&fit=crop">
+                <div><strong>Vegan Delight Bowl</strong><div class="badge">Carbs 78%</div></div>
+              </div>
+              <div class="item">
+                <img alt="Smoothie" src="https://images.unsplash.com/photo-1542444459-db63c9f50879?q=80&w=400&auto=format&fit=crop">
+                <div><strong>Smoothie Verde</strong><div class="badge">Detox</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:16px">
+            <h4>Próximos lembretes</h4>
+            <div class="list">
+              <div class="item"><img alt="Água" src="https://images.unsplash.com/photo-1517685352821-92cf88aee5a5?q=80&w=200&auto=format&fit=crop"><div>Hidratação · <span class="badge">a cada 2h</span></div></div>
+              <div class="item"><img alt="Aquecimento" src="https://images.unsplash.com/photo-1558233043-9f9f2a6f3cfc?q=80&w=200&auto=format&fit=crop"><div>Aquecimento · <span class="badge">antes do treino</span></div></div>
+              <div class="item"><img alt="Postura" src="https://images.unsplash.com/photo-1598970434795-0c54fe7c0642?q=80&w=200&auto=format&fit=crop"><div>Postura · <span class="badge">notificações</span></div></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- Toast area -->
+  <div class="toast-area" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+(() => {
+  // Navigation
+  const login = document.getElementById('screen-login');
+  const app = document.getElementById('screen-app');
+  const appHeader = document.getElementById('appHeader');
+  document.getElementById('continueBtn').addEventListener('click', () => {
+    login.classList.add('hide');
+    app.classList.remove('hide');
+    appHeader.classList.remove('hide');
+    toast('Bem-vinda(o)!', 'Seu treino e recomendações foram carregados.');
+  });
+
+  // Carousels nav
+  document.querySelectorAll('.nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.left || btn.dataset.right;
+      const dir = btn.dataset.left ? -1 : 1;
+      const rail = document.getElementById(id);
+      rail.scrollBy({left: dir * (rail.clientWidth * .8), behavior:'smooth'});
+    });
+  });
+
+  // Click on cards using delegation
+  document.querySelectorAll('.rail').forEach(rail => {
+    rail.addEventListener('click', e => {
+      const card = e.target.closest('.card');
+      if(!card) return;
+      toast('Abrindo', card.dataset.title || 'Item');
+    });
+  });
+  document.getElementById('watchNow').addEventListener('click', () => toast('Assistir agora','Reproduzindo série de treino.'));
+
+  // Toast system
+  const area = document.querySelector('.toast-area');
+  function toast(title, msg){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<div style="font-size:18px">💡</div>' +
+                   '<div style="flex:1"><p class="title">'+title+'</p><p class="msg">'+msg+'</p></div>' +
+                   '<button class="close" aria-label="Fechar">✕</button>';
+    area.appendChild(el);
+    const remove = () => { el && el.remove(); };
+    el.querySelector('.close').addEventListener('click', remove, {once:true});
+    setTimeout(remove, 4000);
+  }
+  // Auto reminders (20s)
+  const reminders=[
+    ['Hidratação','Beba água agora (200ml).'],
+    ['Postura','Ajuste a postura e relaxe ombros.'],
+    ['Aquecimento','3 min de mobilidade leve.'],
+    ['Respiração','Inspire 4s, segure 2s, solte 6s.']
+  ];
+  let i=0;
+  setInterval(()=>{ if(document.hidden) return; const r = reminders[i++%reminders.length]; toast(r[0], r[1]); }, 20000);
+
+  // Header actions
+  document.getElementById('historyBtn').addEventListener('click', ()=>toast('Histórico','Últimos treinos carregados.'));
+})();
+</script>
+</body>
+</html>
