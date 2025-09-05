@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treinos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Estilos globais */
+    body {
+      margin: 0;
+      font-family: 'Sora', sans-serif;
+      background: #f5f6fa;
+      color: #222;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+    header .left {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    header .right {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    /* Botão Dieta com gradiente e brilho */
+    .btn-dieta {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      background: linear-gradient(90deg, #3a3a3a, #4d4d4d, #666666, #3a3a3a);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 6s infinite;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      text-decoration: none;
+      position: relative;
+    }
+    .btn-dieta::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -25%;
+      width: 50%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: skewX(-20deg) translateX(-100%);
+      animation: shine 4s infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+    @keyframes shine {
+      0% { transform: skewX(-20deg) translateX(-100%); opacity: 0; }
+      40% { opacity: 1; }
+      60% { opacity: 1; }
+      100% { transform: skewX(-20deg) translateX(200%); opacity: 0; }
+    }
+    /* Toast assistente */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: none;
+      animation: fadeInOut 4s forwards;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(20px); }
+      10%, 90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(20px); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="left">
+      <a href="index.html" class="logo">🏋️‍♀️</a>
+    </div>
+    <div class="right">
+      <a href="dieta.html" class="btn-dieta">Dieta</a>
+      <button id="reset">🔄</button>
+      <button id="assistant">💡</button>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <h2>Treino de Posterior & Glúteo (0/8)</h2>
+      <!-- Cards de treino com vídeos -->
+      <div class="card">
+        <h3>Agachamento Sumô com Halteres</h3>
+        <video src="https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-sumo-squat-front.mp4" width="360" controls></video>
+        <p>Séries: 3x10/10/10 - Drop | Carga: 0kg | Intervalo: 60s</p>
+        <button class="concluir">✔ Concluir</button>
+      </div>
+      <!-- Adicione aqui os outros exercícios e vídeos -->
+    </section>
+  </main>
+
+  <!-- Toast da assistente -->
+  <div id="assistant-toast" class="toast"></div>
+
+  <script>
+    // Assistente Minimalista
+    const assistantToast = document.getElementById('assistant-toast');
+    const messages = [
+      "💧 Não esqueça de beber água.",
+      "✨ Cada repetição te deixa mais forte.",
+      "🧘 Respira fundo, postura firme.",
+      "👏 Boa! Mais uma série concluída."
+    ];
+    let msgIndex = 0;
+    function showAssistantMessage(){
+      assistantToast.innerText = messages[msgIndex];
+      assistantToast.style.display = 'block';
+      setTimeout(()=>assistantToast.style.display='none', 4000);
+      // Voz feminina
+      if(window.speechSynthesis){
+        const utter = new SpeechSynthesisUtterance(messages[msgIndex]);
+        const voices = speechSynthesis.getVoices();
+        const female = voices.find(v=>/female|mulher|woman/i.test(v.name)) || voices[0];
+        if(female) utter.voice = female;
+        speechSynthesis.speak(utter);
+      }
+      msgIndex = (msgIndex+1) % messages.length;
+    }
+    setInterval(showAssistantMessage, 12000);
+  </script>
+</body>
+</html>
