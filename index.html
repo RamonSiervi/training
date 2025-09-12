@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Treinos — Layout Reimaginado</title>
+<style>
+  /* ====== RESET + BASIC ====== */
+  :root{
+    --bg:#f3f5f7;
+    --card-bg: rgba(255,255,255,0.85);
+    --glass-border: rgba(0,0,0,0.06);
+    --accent:#0ea5a8;
+    --muted:#6b7280;
+    --dark:#222a35;
+    --glass-shadow: 0 6px 18px rgba(18, 36, 56, 0.08);
+    --radius:14px;
+    --transition:300ms cubic-bezier(.2,.9,.2,1);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg,#f6f8fa 0%, #eef2f6 100%);
+    color:var(--dark);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding-bottom:80px;
+  }
+
+  /* ====== TOP HEADER (inspired by second image) ====== */
+  header{
+    background: linear-gradient(180deg,#283745 0%, #213140 100%);
+    color:white;
+    padding:18px 24px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .logo {
+    width:44px;height:44px;border-radius:8px;background:linear-gradient(135deg,#0ea5a8,#60a5fa);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;
+    box-shadow: 0 6px 20px rgba(10, 100, 120, 0.15);
+  }
+  header h1{font-size:18px;margin:0;letter-spacing:0.6px}
+  .searchbox{
+    margin-left:auto;
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .searchbox input{
+    width:320px;max-width:40vw;padding:10px 40px 10px 14px;border-radius:999px;border:0;outline:none;background:rgba(255,255,255,0.08);color:white;font-size:14px;transition:var(--transition);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .searchbox input::placeholder{color:rgba(255,255,255,0.7)}
+  .searchbox .icon{
+    position:absolute;right:8px;display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;
+  }
+
+  /* ====== MAIN LAYOUT ====== */
+  .container{
+    max-width:1100px;
+    margin:22px auto;
+    padding:0 18px;
+  }
+
+  /* Info banner with START button (like first image) */
+  .banner{
+    background:linear-gradient(90deg,#0ea5a8,#22c1c3);
+    color:white;padding:18px;border-radius:12px;display:flex;align-items:center;gap:18px;box-shadow:var(--glass-shadow);
+    margin-bottom:18px;
+  }
+  .banner .cta{margin-left:auto;background:rgba(255,255,255,0.12);padding:10px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);cursor:pointer}
+  .banner p{margin:0;opacity:0.98}
+
+  /* Accordion sections */
+  .sections{display:flex;flex-direction:column;gap:16px}
+  .section{
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,250,250,0.9));
+    border-radius:14px;padding:12px;border:1px solid var(--glass-border);box-shadow:var(--glass-shadow);overflow:hidden;
+  }
+  .section .heading{
+    display:flex;align-items:center;gap:12px;cursor:pointer;padding:8px;border-radius:10px;
+  }
+  .section .heading:hover{background:rgba(0,0,0,0.02)}
+  .section h2{margin:0;font-size:16px}
+  .toggle{
+    margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:600;color:var(--muted)
+  }
+  .toggle .plus{display:inline-block;width:34px;height:34px;border-radius:8px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;background:white;box-shadow: 0 2px 8px rgba(16,24,40,0.04);transition:transform var(--transition)}
+
+  /* Collapsible content */
+  .content{
+    margin-top:10px;max-height:0;overflow:hidden;transition:max-height var(--transition),opacity var(--transition);opacity:0;
+  }
+  .content.open{opacity:1;padding-top:10px;max-height:2000px}
+
+  /* Cards layout */
+  .cards{display:flex;flex-direction:column;gap:14px}
+  .card{
+    display:flex;gap:14px;background:var(--card-bg);border-radius:12px;padding:14px;align-items:center;border:1px solid rgba(10,20,30,0.03);
+    transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 260ms;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(12,30,60,0.08)}
+  .card .info{flex:1}
+  .card h3{margin:0 0 6px 0;font-size:15px}
+  .meta{font-size:13px;color:var(--muted);line-height:1.4}
+  .meta b{color:var(--dark)}
+  .video-thumb{
+    width:124px;height:124px;border-radius:10px;background:linear-gradient(180deg,#0f1724, #0a1120);position:relative;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;color:white;
+  }
+  .video-thumb .play{
+    width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,0.08)
+  }
+  .video-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* small link style */
+  .interval{display:inline-flex;align-items:center;gap:8px;margin-top:8px;color:var(--accent);font-weight:600;font-size:13px;text-decoration:none}
+
+  /* search result highlight hide */
+  .hidden{display:none!important;opacity:0;height:0;padding:0;margin:0}
+
+  /* responsive */
+  @media (max-width:900px){
+    .video-thumb{width:96px;height:96px}
+    .searchbox input{width:200px}
+  }
+  @media (max-width:600px){
+    header{padding:12px}
+    .searchbox input{width:140px}
+    .card{flex-direction:row;align-items:center}
+    .video-thumb{width:88px;height:88px}
+    .banner{flex-direction:column;align-items:flex-start;gap:10px}
+  }
+  /* small accessibility focus */
+  button:focus, .heading:focus{outline:3px solid rgba(14,165,168,0.14);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" aria-hidden="false">
+    <div class="logo">MF</div>
+    <div>
+      <h1>MFITPERSONAL</h1>
+      <div style="font-size:12px;color:rgba(255,255,255,0.85)">Treinos & Vídeos — Reimaginado</div>
+    </div>
+  </div>
+
+  <div class="searchbox" role="search" aria-label="Busca de treinos">
+    <input id="searchInput" placeholder="Procurar treino, exercício..." aria-label="Pesquisar treinos" />
+    <div class="icon" aria-hidden="true">
+      <!-- lupa svg -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="6"></circle>
+        <path d="M21 21l-4.35-4.35"></path>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="banner" role="region" aria-label="iniciar treino">
+    <div>
+      <strong>Você está em "modo visualização".</strong>
+      <div style="font-size:14px; opacity:0.95">Aperte INICIAR para começar seu treino.</div>
+    </div>
+    <button class="cta" onclick="alert('Função iniciar — placeholder')">INICIAR</button>
+  </div>
+
+  <main class="sections" id="sectionsRoot">
+    <!-- Section template -->
+    <!-- Each section is collapsed by default. Button toggles .open class on content -->
+    <!-- SECTION 1: Posterior -->
+    <section class="section" data-section="posterior">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Primeiro treino — Posterior</h2>
+        <div class="toggle" aria-hidden="true">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <!-- Card 1 -->
+          <article class="card" data-search="Mesa flexora aquecimento 2x15 15 Intervalo 30s">
+            <div class="info">
+              <h3>Mesa flexora (aquecimento)</h3>
+              <div class="meta">
+                Séries: <b>2x15/15</b><br>
+                Intervalo: <b>30s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <!-- Replace with <img src="SEU-THUMB.jpg"> or a video element later -->
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="card" data-search="Mesa flexora 3x12 segurando 6 primeiras 6 ultimas normais Intervalo 40s">
+            <div class="info">
+              <h3>Mesa flexora</h3>
+              <div class="meta">
+                Séries: <b>3x12</b> — Rep cada série (As 6 primeiras segurando encima e as 6 ultimas normais).<br>
+                Intervalo: <b>40s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="card" data-search="Cadeira flexora 1x12 segurando 6 primeiras 6 ultimas normais Intervalo 30s">
+            <div class="info">
+              <h3>Cadeira flexora</h3>
+              <div class="meta">
+                Séries: <b>1x12</b> — Rep cada série (As 6 primeiras segurando encima e as 6 ultimas normais).<br>
+                Intervalo: <b>30s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="card" data-search="Flexora unilateral 1x16 repetições segurando 6 primeiras 6 ultimas normais Intervalo 30s">
+            <div class="info">
+              <h3>Flexora unilateral</h3>
+              <div class="meta">
+                Séries: <b>1x16</b> — Repetições (As 6 primeiras segurando encima e as 6 ultimas normais).<br>
+                Intervalo: <b>30s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="card" data-search="Stiff barra halteres 4x12 Intervalo 50s">
+            <div class="info">
+              <h3>Stiff (barra ou halteres)</h3>
+              <div class="meta">
+                Séries: <b>4x12/12/12/12</b><br>
+                Intervalo: <b>50s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 6 -->
+          <article class="card" data-search="Terra sumô c halter 4x15 12 10 10 Intervalo 50s">
+            <div class="info">
+              <h3>Terra sumô c/ halter</h3>
+              <div class="meta">
+                Séries: <b>4x15/12/10/10</b><br>
+                Intervalo: <b>50s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+          <!-- Card 7 -->
+          <article class="card" data-search="Panturrilha no leg horizontal 5x15 Intervalo 30s">
+            <div class="info">
+              <h3>Panturrilha no leg horizontal</h3>
+              <div class="meta">
+                Séries: <b>5x15</b><br>
+                Intervalo: <b>30s</b>
+              </div>
+            </div>
+            <div class="video-thumb" aria-hidden="true">
+              <div style="font-size:12px;text-align:center;padding:6px">Vídeo<br>placeholder</div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Costa e Bíceps -->
+    <section class="section" data-section="costabiceps">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Segundo treino — Costa e Bíceps</h2>
+        <div class="toggle">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <article class="card" data-search="Puxador frente 4x12 Intervalo 30s">
+            <div class="info">
+              <h3>Puxador frente</h3>
+              <div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Remada sentada 4x12 Intervalo 30s">
+            <div class="info">
+              <h3>Remada sentada</h3>
+              <div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Crucifixo invertido no voador 4x12 Intervalo 30s">
+            <div class="info">
+              <h3>Crucifixo invertido no voador</h3>
+              <div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Rosca alternada 4x12 Intervalo 30s">
+            <div class="info">
+              <h3>Rosca alternada</h3>
+              <div class="meta">Séries: <b>4x/12/12/12/12</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Rosca direta barra 4x12 Intervalo 30s">
+            <div class="info">
+              <h3>Rosca direta - barra</h3>
+              <div class="meta">Séries: <b>4x/12/12/12/12</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Glúteos isolado -->
+    <section class="section" data-section="gluteosisolado">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Terceiro treino — Glúteos isolado</h2>
+        <div class="toggle">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <article class="card" data-search="Coice 3 apoios caneleira 2x12 6 lentas 6 normais Intervalo 30s">
+            <div class="info">
+              <h3>Coice 3 apoios (caneleira)</h3>
+              <div class="meta">Séries: <b>2x12</b> (6 lentas e 6 normais)<br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Coice no cabo perna esticada 3x12 6 primeiras amplitude normais 6 últimas curtinhas Intervalo 40s">
+            <div class="info">
+              <h3>Coice no cabo (perna esticada)</h3>
+              <div class="meta">Séries: <b>3x12</b> (as 6 primeiras amplitude normais e as 6 últimas curtinhas, metade da amplitude).<br>Intervalo: <b>40s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Elevação pélvica 3x12 6 primeiros segurando 2 segundos 6 últimos normais Intervalo 50s">
+            <div class="info">
+              <h3>Elevação pélvica</h3>
+              <div class="meta">Séries: <b>3x12</b> — Rep cada série (6 primeiros movimento segurando 2 segundos e 6 últimos normais).<br>Intervalo: <b>50s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Avanço no Smith ou halteres 4x12 Intervalo 50s">
+            <div class="info">
+              <h3>Avanço no Smith ou halteres</h3>
+              <div class="meta">Séries: <b>4x12</b><br>Intervalo: <b>50s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Cadeira abdutora 1x36 6 curtos 6 normais 3x Intervalo 40s">
+            <div class="info">
+              <h3>Cadeira abdutora</h3>
+              <div class="meta">Séries: <b>1x36</b> — Rep cada série (6 movimentos curtos e 6 movimentos normais, faça isso 3x).<br>Intervalo: <b>40s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Panturrilha em pé 5x15 1x10 10 10 10 drop Intervalo 30s">
+            <div class="info">
+              <h3>Panturrilha em pé</h3>
+              <div class="meta">Séries: <b>5x15</b> - <b>1x10/10/10/10 drop</b><br>Intervalo: <b>30s</b></div>
+            </div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Peito, ombro, tríceps -->
+    <section class="section" data-section="peitoombro">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Quarto treino — (Peito / Ombro / Tríceps)</h2>
+        <div class="toggle">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <article class="card" data-search="Supino reto 4x12 Intervalo 30s">
+            <div class="info"><h3>Supino reto</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Supino inclinado 4x12 Intervalo 30s">
+            <div class="info"><h3>Supino inclinado</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Tríceps cordas 4x12 Intervalo 30s">
+            <div class="info"><h3>Tríceps cordas</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Tríceps francês halteres 4x12 Intervalo 30s">
+            <div class="info"><h3>Tríceps francês - halteres</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Elevação frontal 4x12 Intervalo 30s">
+            <div class="info"><h3>Elevação frontal</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Elevação lateral 4x12 Intervalo 30s">
+            <div class="info"><h3>Elevação lateral</h3><div class="meta">Séries: <b>4x12/12/12/12</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: Quadríceps -->
+    <section class="section" data-section="quadriceps">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Quinto treino — Quadríceps</h2>
+        <div class="toggle">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <article class="card" data-search="Cadeira extensora 2x20 10 primeiros segura 2 segundos 10 últimos normais Intervalo 40s">
+            <div class="info"><h3>Cadeira extensora</h3><div class="meta">Séries: <b>2x20</b> — Rep cada série (10 primeiros movimentos segura 2 segundo e os 10 últimos normais).<br>Intervalo: <b>40s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Leg horizontal 2x24 8 lentos 8 curtos 8 rápidos Intervalo 40s">
+            <div class="info"><h3>Leg horizontal</h3><div class="meta">Séries: <b>2x24</b> — Rep cada série (8 movimentos lentos + 8 movimentos curtos + 8 movimentos rápidos).<br>Intervalo: <b>40s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Leg 45 3x12 lentos Intervalo 50s">
+            <div class="info"><h3>Leg 45</h3><div class="meta">Séries: <b>3x12</b> (movimentos lentos).<br>Intervalo: <b>50s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Agachamento hack 3x12 6 lentos 6 rápidos Intervalo 50s">
+            <div class="info"><h3>Agachamento hack</h3><div class="meta">Séries: <b>3x12</b> rep cada série (6 movimentos lentos + 6 movimentos rápidos).<br>Intervalo: <b>50s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Cadeira extensora unilateral 2x8 movimentos lentos Intervalo 30s">
+            <div class="info"><h3>Cadeira extensora unilateral</h3><div class="meta">Séries: <b>2x8</b> repetições cada série (todas com movimentos lentos).<br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: Glúteos / posterior -->
+    <section class="section" data-section="gluteosposterior">
+      <div class="heading" tabindex="0" role="button" aria-expanded="false">
+        <h2>Sexto treino — Glúteos / Posterior</h2>
+        <div class="toggle">
+          <div class="plus">+</div>
+        </div>
+      </div>
+
+      <div class="content" aria-hidden="true">
+        <div class="cards">
+          <article class="card" data-search="Elevação pélvica 5x10 segurar 2 segundos Intervalo 50s">
+            <div class="info"><h3>Elevação pélvica</h3><div class="meta">Séries: <b>5x10</b> — Em todas as séries segurar 2 segundos de contração encima.<br>Intervalo: <b>50s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Coice 3 apoios caneleira 4x10 Intervalo 30s">
+            <div class="info"><h3>Coice 3 apoios (caneleira)</h3><div class="meta">Séries: <b>4x10</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Coice no cabo perna esticada 4x15 5 primeiras curtinhas 10 segurar 2 segundos Intervalo 40s">
+            <div class="info"><h3>Coice no cabo (perna esticada)</h3><div class="meta">Séries: <b>4x15</b> — (As 5 primeiras curtinhas, e as outras 10 rep segurar 2 segundos de contração encima).<br>Intervalo: <b>40s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Agachamento búlgaro 3x10 Intervalo 50s">
+            <div class="info"><h3>Agachamento búlgaro</h3><div class="meta">Séries: <b>3x10</b><br>Intervalo: <b>50s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Cadeira abdutora 3x30 10 segurar 2 segundos diminui peso 10 diminui mais 10 Intervalo 30s">
+            <div class="info"><h3>Cadeira abdutora</h3><div class="meta">Séries: <b>3x30</b> — (10 segurando 2 segundos + diminui o peso e faz mais 10 normais + diminui o peso novamente e faz mais 10 normais).<br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+
+          <article class="card" data-search="Panturrilha no leg horizontal 5x15 Intervalo 30s">
+            <div class="info"><h3>Panturrilha no leg horizontal</h3><div class="meta">Séries: <b>5x15</b><br>Intervalo: <b>30s</b></div></div>
+            <div class="video-thumb"><div style="font-size:12px;padding:6px">Vídeo<br>placeholder</div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ====== SCRIPTS ====== -->
+<script>
+  // ====== Collapsible sections: start closed ======
+  document.querySelectorAll('.section').forEach(section=>{
+    const heading = section.querySelector('.heading');
+    const content = section.querySelector('.content');
+    const plus = section.querySelector('.plus');
+
+    const setState = (open) => {
+      if(open){
+        content.classList.add('open');
+        content.setAttribute('aria-hidden','false');
+        heading.setAttribute('aria-expanded','true');
+        plus.textContent = '−';
+      } else {
+        content.classList.remove('open');
+        content.setAttribute('aria-hidden','true');
+        heading.setAttribute('aria-expanded','false');
+        plus.textContent = '+';
+      }
+    };
+
+    // start closed
+    setState(false);
+
+    // toggle on click or Enter/Space
+    heading.addEventListener('click', ()=> setState(!content.classList.contains('open')));
+    heading.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        setState(!content.classList.contains('open'));
+      }
+    });
+  });
+
+  // ====== Search functionality ======
+  const input = document.getElementById('searchInput');
+  input.addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    // if query present, open sections that contain matches
+    document.querySelectorAll('.section').forEach(section=>{
+      const cards = section.querySelectorAll('.card');
+      let anyMatch = false;
+      cards.forEach(card=>{
+        const text = (card.getAttribute('data-search') || card.innerText).toLowerCase();
+        const match = q === '' ? true : text.includes(q);
+        card.classList.toggle('hidden', !match);
+        if(match) anyMatch = true;
+      });
+
+      const content = section.querySelector('.content');
+      const plus = section.querySelector('.plus');
+      if(q === ''){
+        // collapse all when empty (your request: start closed)
+        content.classList.remove('open');
+        content.setAttribute('aria-hidden','true');
+        section.querySelector('.heading').setAttribute('aria-expanded','false');
+        plus.textContent = '+';
+      } else {
+        if(anyMatch){
+          content.classList.add('open');
+          content.setAttribute('aria-hidden','false');
+          section.querySelector('.heading').setAttribute('aria-expanded','true');
+          plus.textContent = '−';
+        } else {
+          // optionally collapse sections without matches
+          content.classList.remove('open');
+          content.setAttribute('aria-hidden','true');
+          section.querySelector('.heading').setAttribute('aria-expanded','false');
+          plus.textContent = '+';
+        }
+      }
+    });
+  });
+
+  // ====== Video placeholder: when clicking thumb, console logs (to replace with real player) ======
+  document.querySelectorAll('.video-thumb').forEach(el=>{
+    el.style.cursor='pointer';
+    el.addEventListener('click', ()=>{
+      // In production: replace this with code to load your video player. For now it's a placeholder.
+      alert('Aqui você pode substituir pelo vídeo real (insira um <video> ou iframe).');
+    });
+  });
+
+  // ====== Accessibility enhancements ======
+  // make plus buttons keyboard accessible
+  document.querySelectorAll('.plus').forEach(btn=>{
+    btn.setAttribute('tabindex',0);
+    btn.addEventListener('keydown',(e)=>{
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        btn.closest('.heading').click();
+      }
+    });
+  });
+
+  // NOTE: To add a new exercise card:
+  // 1) duplicate an <article class="card"> block inside the desired .cards container
+  // 2) edit the inner text and the data-search attribute to make it searchable
+  // 3) replace the video placeholder contents with <img src="thumb.jpg"> or a <video> element
+
+</script>
+
+</body>
+</html>
