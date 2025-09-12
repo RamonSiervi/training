@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Treinos — Layout</title>
+
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* Custom extras (glass look + smooth transitions) */
+    :root{
+      --glass-bg: rgba(255,255,255,0.60);
+      --glass-border: rgba(255,255,255,0.35);
+      --muted: #6b7280;
+      --accent: #06b6d4;
+    }
+    body{
+      background: linear-gradient(180deg,#f3f6f9 0%, #eef4f8 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px) saturate(120%);
+      -webkit-backdrop-filter: blur(8px) saturate(120%);
+      border: 1px solid var(--glass-border);
+    }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(12,30,60,0.08); }
+    .toggle-btn { transition: transform .28s cubic-bezier(.2,.9,.2,1); }
+    .plus-rotate { transform: rotate(45deg); } /* when opened, + turns into - visually */
+    .hidden-card { display:none !important; }
+    /* make native video controls match size inside cards */
+    .exercise-video { width:100%; height:220px; object-fit:cover; border-radius:10px; background:#000; }
+    @media (max-width:640px){
+      .exercise-video{height:160px}
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- HEADER -->
+  <header class="w-full bg-gradient-to-r from-slate-800 to-slate-900 text-white py-4 shadow-md">
+    <div class="max-w-6xl mx-auto px-4 flex items-center gap-4">
+      <!-- Logo animated (mp4) -->
+      <div class="w-28 h-12 flex items-center">
+        <!-- Looping animated logo (muted autoplay loop playsinline) -->
+        <video id="logoVideo" class="w-full h-full object-contain" autoplay muted loop playsinline>
+          <source src="https://cdn.dribbble.com/userupload/30035402/file/original-848c54b44182083599d62428e3ac9ad2.mp4" type="video/mp4">
+          Seu navegador não suporta o vídeo.
+        </video>
+      </div>
+
+      <!-- Search -->
+      <div class="ml-4 flex-1 max-w-xl">
+        <div class="relative">
+          <input id="searchInput" type="search" placeholder="Procurar treino, exercício..." aria-label="Pesquisar treinos"
+                 class="w-full px-12 py-3 rounded-full bg-white/8 placeholder-white/70 text-white focus:outline-none focus:ring-2 focus:ring-cyan-300 transition" />
+          <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+            <!-- lupa -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="6"></circle>
+              <path d="M21 21l-4.35-4.35"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- small placeholder right side to balance -->
+      <div class="w-12"></div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- Top intro area removed the "modo visualização" as requested -->
+    <section class="mb-6">
+      <div class="glass rounded-2xl p-6 flex items-center gap-6">
+        <div>
+          <h1 class="text-2xl font-semibold text-slate-900">Programas de Treino</h1>
+          <p class="text-sm text-slate-600 mt-1">Organizados por foco — abra uma sessão para ver os exercícios e vídeos.</p>
+        </div>
+        <div class="ml-auto text-sm text-slate-500">Design: clean • Fácil de editar</div>
+      </div>
+    </section>
+
+    <!-- SECTIONS (accordion style) -->
+    <section id="sectionsRoot" class="space-y-4">
+
+      <!-- SECTION: Posterior (com 4 vídeos embutidos) -->
+      <div class="glass rounded-2xl p-4" data-section="posterior">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Primeiro treino — Posterior</h2>
+            <p class="text-sm text-slate-500">Foco em posterior, stiff e panturrilhas</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <!-- 1: Mesa flexora (aquecimento) - vídeo 1 -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="mesa flexora aquecimento 2x15 15 intervalo 30s">
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <h3 class="text-md font-semibold text-slate-900">Mesa flexora (aquecimento)</h3>
+                  <div class="text-sm text-slate-600 mt-1">
+                    Séries: <strong>2x15/15</strong> · Intervalo: <strong>30s</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <!-- vídeo com controles -->
+                <video class="exercise-video rounded-md" controls preload="metadata">
+                  <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-hamstring-curl-front.mp4" type="video/mp4">
+                  Seu navegador não suporta o vídeo.
+                </video>
+              </div>
+            </article>
+
+            <!-- 2: Mesa flexora - vídeo 2 (same link as user provided twice) -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="mesa flexora 3x12 segurando 6 primeiras 6 ultimas normais intervalo 40s">
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <h3 class="text-md font-semibold text-slate-900">Mesa flexora</h3>
+                  <div class="text-sm text-slate-600 mt-1">
+                    Séries: <strong>3x12</strong> — (As 6 primeiras segurando em cima e as 6 últimas normais). · Intervalo: <strong>40s</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <video class="exercise-video rounded-md" controls preload="metadata">
+                  <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-hamstring-curl-front.mp4" type="video/mp4">
+                  Seu navegador não suporta o vídeo.
+                </video>
+              </div>
+            </article>
+
+            <!-- 3: Cadeira flexora - vídeo 3 -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="cadeira flexora 1x12 segurando 6 primeiras 6 ultimas normais intervalo 30s">
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <h3 class="text-md font-semibold text-slate-900">Cadeira flexora</h3>
+                  <div class="text-sm text-slate-600 mt-1">
+                    Séries: <strong>1x12</strong> — (As 6 primeiras segurando em cima e as 6 últimas normais). · Intervalo: <strong>30s</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <video class="exercise-video rounded-md" controls preload="metadata">
+                  <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-seated-hamstring-curl-front.mp4" type="video/mp4">
+                  Seu navegador não suporta o vídeo.
+                </video>
+              </div>
+            </article>
+
+            <!-- 4: Flexora unilateral - vídeo 4 -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="flexora unilateral 1x16 segurando 6 primeiras 6 ultimas normais intervalo 30s">
+              <div class="flex items-start gap-4">
+                <div class="flex-1">
+                  <h3 class="text-md font-semibold text-slate-900">Flexora unilateral</h3>
+                  <div class="text-sm text-slate-600 mt-1">
+                    Séries: <strong>1x16</strong> — (As 6 primeiras segurando em cima e as 6 últimas normais). · Intervalo: <strong>30s</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <video class="exercise-video rounded-md" controls preload="metadata">
+                  <source src="https://i.makeagif.com/media/10-31-2023/781-48.mp4" type="video/mp4">
+                  Seu navegador não suporta o vídeo.
+                </video>
+              </div>
+            </article>
+
+            <!-- 5: Stiff (placeholder, sem vídeo por enquanto) -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="stiff barra halteres 4x12 intervalo 50s">
+              <div>
+                <h3 class="text-md font-semibold text-slate-900">Stiff (barra ou halteres)</h3>
+                <p class="text-sm text-slate-600 mt-1">Séries: <strong>4x12/12/12/12</strong> · Intervalo: <strong>50s</strong></p>
+              </div>
+            </article>
+
+            <!-- 6: Terra sumô -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="terra sumo halter 4x15 12 10 10 intervalo 50s">
+              <div>
+                <h3 class="text-md font-semibold text-slate-900">Terra sumô c/ halter</h3>
+                <p class="text-sm text-slate-600 mt-1">Séries: <strong>4x15/12/10/10</strong> · Intervalo: <strong>50s</strong></p>
+              </div>
+            </article>
+
+            <!-- 7: Panturrilha -->
+            <article class="card glass rounded-xl p-4 flex flex-col gap-3 card-hover" data-search="panturrilha leg horizontal 5x15 intervalo 30s">
+              <div>
+                <h3 class="text-md font-semibold text-slate-900">Panturrilha no leg horizontal</h3>
+                <p class="text-sm text-slate-600 mt-1">Séries: <strong>5x15</strong> · Intervalo: <strong>30s</strong></p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Costa e Bíceps -->
+      <div class="glass rounded-2xl p-4" data-section="costabiceps">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Segundo treino — Costa e Bíceps</h2>
+            <p class="text-sm text-slate-500">Puxador, remada e roscas</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <article class="card glass rounded-xl p-4 card-hover" data-search="puxador frente 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Puxador frente</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="remada sentada 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Remada sentada</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="crucifixo invertido no voador 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Crucifixo invertido no voador</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="rosca alternada 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Rosca alternada</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="rosca direta barra 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Rosca direta - barra</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Glúteos isolado -->
+      <div class="glass rounded-2xl p-4" data-section="gluteosisolado">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Terceiro treino — Glúteos isolado</h2>
+            <p class="text-sm text-slate-500">Coice, elevação pélvica e abdutora</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <article class="card glass rounded-xl p-4 card-hover" data-search="coice 3 apoios caneleira 2x12 6 lentas 6 normais intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Coice 3 apoios (caneleira)</h3>
+              <p class="text-sm text-slate-600">2x12 (6 lentas e 6 normais) · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="coice no cabo perna esticada 3x12 amplitude normais curtinhas intervalo 40s">
+              <h3 class="font-semibold text-slate-900">Coice no cabo (perna esticada)</h3>
+              <p class="text-sm text-slate-600">3x12 · Intervalo: 40s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="elevação pélvica 3x12 segurar 2 segundos 6 primeiros intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Elevação pélvica</h3>
+              <p class="text-sm text-slate-600">3x12 · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="avanço smith halteres 4x12 intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Avanço no Smith ou halteres</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="cadeira abdutora 1x36 6 curtos 6 normais 3x intervalo 40s">
+              <h3 class="font-semibold text-slate-900">Cadeira abdutora</h3>
+              <p class="text-sm text-slate-600">1x36 (repete curtos/normais) · Intervalo: 40s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="panturrilha em pé 5x15 drop 1x10 10 10 10 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Panturrilha em pé</h3>
+              <p class="text-sm text-slate-600">5x15 · + 1x10/10/10/10 drop · Intervalo: 30s</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Peito/Ombro/Tríceps -->
+      <div class="glass rounded-2xl p-4" data-section="peitoombro">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Quarto treino — Peito / Ombro / Tríceps</h2>
+            <p class="text-sm text-slate-500">Supinos, tríceps e elevações</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <article class="card glass rounded-xl p-4 card-hover" data-search="supino reto 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Supino reto</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="supino inclinado 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Supino inclinado</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="triceps cordas 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Tríceps cordas</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="triceps frances halteres 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Tríceps francês - halteres</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="elevacao frontal 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Elevação frontal</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="elevacao lateral 4x12 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Elevação lateral</h3>
+              <p class="text-sm text-slate-600">4x12 · Intervalo: 30s</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Quadríceps -->
+      <div class="glass rounded-2xl p-4" data-section="quadriceps">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Quinto treino — Quadríceps</h2>
+            <p class="text-sm text-slate-500">Extensora, leg e hack</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <article class="card glass rounded-xl p-4 card-hover" data-search="cadeira extensora 2x20 segurar 2 segundos 10 primeiros intervalo 40s">
+              <h3 class="font-semibold text-slate-900">Cadeira extensora</h3>
+              <p class="text-sm text-slate-600">2x20 · Intervalo: 40s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="leg horizontal 2x24 8 lentos 8 curtos 8 rapidos intervalo 40s">
+              <h3 class="font-semibold text-slate-900">Leg horizontal</h3>
+              <p class="text-sm text-slate-600">2x24 · Intervalo: 40s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="leg 45 3x12 movimentos lentos intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Leg 45</h3>
+              <p class="text-sm text-slate-600">3x12 · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="agachamento hack 3x12 6 lentos 6 rapidos intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Agachamento hack</h3>
+              <p class="text-sm text-slate-600">3x12 · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="cadeira extensora unilateral 2x8 movimentos lentos intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Cadeira extensora unilateral</h3>
+              <p class="text-sm text-slate-600">2x8 · Intervalo: 30s</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: Glúteos / Posterior -->
+      <div class="glass rounded-2xl p-4" data-section="gluteosposterior">
+        <button class="w-full flex items-center gap-4 heading-btn" aria-expanded="false">
+          <div>
+            <h2 class="text-lg font-semibold text-slate-900">Sexto treino — Glúteos / Posterior</h2>
+            <p class="text-sm text-slate-500">Elevação pélvica, coices e abdutora</p>
+          </div>
+          <div class="ml-auto flex items-center gap-3">
+            <div class="text-sm text-slate-600">Abrir</div>
+            <div class="w-10 h-10 bg-white/90 rounded-lg flex items-center justify-center toggle-btn" aria-hidden="true">
+              <span class="text-slate-700 font-bold">+</span>
+            </div>
+          </div>
+        </button>
+
+        <div class="mt-4 content" style="display:none;">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <article class="card glass rounded-xl p-4 card-hover" data-search="elevacao pelvica 5x10 segurar 2 segundos intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Elevação pélvica</h3>
+              <p class="text-sm text-slate-600">5x10 · Segurar 2s na contração · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="coice 3 apoios caneleira 4x10 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Coice 3 apoios (caneleira)</h3>
+              <p class="text-sm text-slate-600">4x10 · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="coice no cabo perna esticada 4x15 5 curtinhas 10 segurar 2s intervalo 40s">
+              <h3 class="font-semibold text-slate-900">Coice no cabo (perna esticada)</h3>
+              <p class="text-sm text-slate-600">4x15 · Intervalo: 40s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="agachamento bulgaro 3x10 intervalo 50s">
+              <h3 class="font-semibold text-slate-900">Agachamento búlgaro</h3>
+              <p class="text-sm text-slate-600">3x10 · Intervalo: 50s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="cadeira abdutora 3x30 10 segurar 2s diminuir peso 10 10 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Cadeira abdutora</h3>
+              <p class="text-sm text-slate-600">3x30 (variações e drops) · Intervalo: 30s</p>
+            </article>
+            <article class="card glass rounded-xl p-4 card-hover" data-search="panturrilha leg horizontal 5x15 intervalo 30s">
+              <h3 class="font-semibold text-slate-900">Panturrilha no leg horizontal</h3>
+              <p class="text-sm text-slate-600">5x15 · Intervalo: 30s</p>
+            </article>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="mt-10 text-sm text-slate-500">Dica: para trocar um vídeo, substitua o `src` do elemento `<video>` no card correspondente.</div>
+
+  </main>
+
+  <!-- SCRIPTS: Busca + Accordion behavior -->
+  <script>
+    // Accordion toggles (start closed)
+    document.querySelectorAll('.heading-btn').forEach(btn=>{
+      const container = btn.closest('[data-section]');
+      const content = container.querySelector('.content');
+      const toggleBox = btn.querySelector('.toggle-btn');
+      const plusSpan = toggleBox.querySelector('span');
+
+      btn.addEventListener('click', ()=>{
+        const isOpen = content.style.display === 'block';
+        // close all first (optional: only allow single open at time)
+        // document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+        if(isOpen){
+          content.style.display = 'none';
+          btn.setAttribute('aria-expanded','false');
+          plusSpan.textContent = '+';
+        } else {
+          content.style.display = 'block';
+          btn.setAttribute('aria-expanded','true');
+          plusSpan.textContent = '−';
+          // smooth scroll into view a bit
+          setTimeout(()=> {
+            container.scrollIntoView({behavior:'smooth', block:'start'});
+          }, 160);
+        }
+      });
+
+      // keyboard support
+      btn.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    // Search filter: shows cards that match and opens the section containing them
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+
+      document.querySelectorAll('[data-section]').forEach(section=>{
+        const content = section.querySelector('.content');
+        const headingBtn = section.querySelector('.heading-btn');
+        const cards = section.querySelectorAll('[data-search]');
+        let any = false;
+
+        cards.forEach(card=>{
+          const txt = (card.getAttribute('data-search') || card.innerText).toLowerCase();
+          const ok = q === '' ? true : txt.includes(q);
+          card.style.display = ok ? '' : 'none';
+          if(ok) any = true;
+        });
+
+        if(q === ''){
+          // reset to closed by default
+          if(content) content.style.display = 'none';
+          if(headingBtn) headingBtn.setAttribute('aria-expanded','false');
+          const plus = section.querySelector('.toggle-btn span');
+          if(plus) plus.textContent = '+';
+        } else {
+          // open sections with matches
+          if(content){
+            if(any){
+              content.style.display = 'block';
+              if(headingBtn) headingBtn.setAttribute('aria-expanded','true');
+              const plus = section.querySelector('.toggle-btn span');
+              if(plus) plus.textContent = '−';
+            } else {
+              content.style.display = 'none';
+              if(headingBtn) headingBtn.setAttribute('aria-expanded','false');
+              const plus = section.querySelector('.toggle-btn span');
+              if(plus) plus.textContent = '+';
+            }
+          }
+        }
+      });
+    });
+
+    // Prevent multiple videos playing at once: when a video plays, pause others
+    document.addEventListener('play', function(e){
+      const el = e.target;
+      if(el.tagName !== 'VIDEO') return;
+      document.querySelectorAll('video').forEach(v=>{
+        if(v !== el && !v.hasAttribute('data-logo')) v.pause();
+      });
+    }, true);
+
+    // Mark logo video to ignore in pause logic
+    const logoV = document.getElementById('logoVideo');
+    if(logoV) logoV.setAttribute('data-logo', 'true');
+
+    // Make video controls visible but avoid autoplay for exercise videos (per your request)
+    // All exercise <video> elements use native controls (no autoplay).
+  </script>
+
+</body>
+</html>
