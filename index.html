@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treinos & Vídeos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #f0f4ff, #e8f9f3);
+      color: #333;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+    }
+    header video {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .search-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 20;
+    }
+    .search-container input {
+      display: none;
+      padding: 6px 10px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+    .search-container.active input {
+      display: inline-block;
+      animation: fadeIn 0.3s ease;
+    }
+    .search-container button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(-5px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+    main {
+      max-width: 900px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    details {
+      margin-bottom: 15px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+    summary {
+      cursor: pointer;
+      padding: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      list-style: none;
+    }
+    summary::marker {
+      display: none;
+    }
+    .card {
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: 10px 0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .video-container video {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 32px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+    .play-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <video autoplay muted loop playsinline>
+      <source src="https://cdn.dribbble.com/userupload/21003465/file/original-52bc215ea673cfb2882d924c9a26486b.mp4" type="video/mp4">
+    </video>
+  </header>
+
+  <div class="search-container">
+    <button id="search-btn">🔍</button>
+    <input type="text" id="search-input" placeholder="Buscar treino...">
+  </div>
+
+  <main>
+    <!-- Treino Posterior -->
+    <details>
+      <summary>Posterior <span>+</span></summary>
+      <div class="card">
+        Mesa flexora (aquecimento) 2x15/15 Intervalo: 30s
+        <div class="video-container">
+          <video>
+            <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-hamstring-curl-front.mp4" type="video/mp4">
+          </video>
+          <button class="play-btn">▶</button>
+        </div>
+      </div>
+      <div class="card">
+        Mesa flexora 3x12 (As 6 primeiras segurando encima e as 6 ultimas normais) Intervalo: 40s
+        <div class="video-container">
+          <video>
+            <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-machine-hamstring-curl-front.mp4" type="video/mp4">
+          </video>
+          <button class="play-btn">▶</button>
+        </div>
+      </div>
+      <div class="card">
+        Cadeira flexora 1x12 (As 6 primeiras segurando encima e as 6 ultimas normais) Intervalo: 30s
+        <div class="video-container">
+          <video>
+            <source src="https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-seated-hamstring-curl-front.mp4" type="video/mp4">
+          </video>
+          <button class="play-btn">▶</button>
+        </div>
+      </div>
+      <div class="card">
+        Flexora unilateral 1x16 (As 6 primeiras segurando encima e as 6 ultimas normais) Intervalo: 30s
+        <div class="video-container">
+          <video>
+            <source src="https://i.makeagif.com/media/10-31-2023/781-48.mp4" type="video/mp4">
+          </video>
+          <button class="play-btn">▶</button>
+        </div>
+      </div>
+      <div class="card">Stiff barra (ou halteres) 4x12/12/12/12 Intervalo: 50s</div>
+      <div class="card">Terra sumô c/ halter 4x15/12/10/10 Intervalo: 50s</div>
+      <div class="card">Panturrilha no leg horizontal 5x15 Intervalo: 30s</div>
+    </details>
+
+    <!-- Costa e Bíceps -->
+    <details>
+      <summary>Costa e Bíceps <span>+</span></summary>
+      <div class="card">Puxador frente 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Remada sentada 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Crucifixo invertido no voador 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Rosca alternada 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Rosca direta - barra 4x12/12/12/12 Intervalo: 30s</div>
+    </details>
+
+    <!-- Glúteos isolado -->
+    <details>
+      <summary>Glúteos isolado <span>+</span></summary>
+      <div class="card">Coice 3 apoios (caneleira) 2x12 (6 lentas e 6 normais) Intervalo: 30s</div>
+      <div class="card">Coice no cabo (perna esticada) 3x12 (as 6 primeiras amplitude normais e as 6 últimas curtinhas, metade da amplitude) Intervalo: 40s</div>
+      <div class="card">Elevação pélvica 3x12 (6 primeiros movimento segurando 2 segundos e 6 últimos normais) Intervalo: 50s</div>
+      <div class="card">Avanço no Smith ou halteres 4x12 Intervalo: 50s</div>
+      <div class="card">Cadeira abdutora 1x36 (6 movimentos curtos e 6 movimentos normais, faça isso 3x) Intervalo: 40s</div>
+      <div class="card">Panturrilha em pé 5x15 - 1x10/10/10/10 drop Intervalo: 30s</div>
+    </details>
+
+    <!-- Peito/tríceps/ombro -->
+    <details>
+      <summary>Peito / Tríceps / Ombro <span>+</span></summary>
+      <div class="card">Supino reto 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Supino inclinado 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Tríceps cordas 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Tríceps francês (halteres) 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Elevação frontal 4x12/12/12/12 Intervalo: 30s</div>
+      <div class="card">Elevação lateral 4x12/12/12/12 Intervalo: 30s</div>
+    </details>
+
+    <!-- Quadríceps -->
+    <details>
+      <summary>Quadríceps <span>+</span></summary>
+      <div class="card">Cadeira extensora 2x20 (10 primeiros movimentos segura 2 segundos e os 10 últimos normais) Intervalo: 40s</div>
+      <div class="card">Leg horizontal 2x24 (8 movimentos lentos + 8 movimentos curtos + 8 movimentos rápidos) Intervalo: 40s</div>
+      <div class="card">Leg 45 3x12 (movimentos lentos) Intervalo: 50s</div>
+      <div class="card">Agachamento hack 3x12 (6 movimentos lentos + 6 movimentos rápidos) Intervalo: 50s</div>
+      <div class="card">Cadeira extensora unilateral 2x8 (todas com movimentos lentos) Intervalo: 30s</div>
+    </details>
+
+    <!-- Glúteos / Posterior -->
+    <details>
+      <summary>Glúteos / Posterior <span>+</span></summary>
+      <div class="card">Elevação pélvica 5x10 (em todas as séries segurar 2 segundos de contração encima) Intervalo: 50s</div>
+      <div class="card">Coice 3 apoios (caneleira) 4x10 Intervalo: 30s</div>
+      <div class="card">Coice no cabo (perna esticada) 4x15 (as 5 primeiras curtinhas, e as outras 10 rep segurar 2 segundos de contração encima) Intervalo: 40s</div>
+      <div class="card">Agachamento búlgaro 3x10 Intervalo: 50s</div>
+      <div class="card">Cadeira abdutora 3x30 (10 segurando 2 segundos + diminui o peso e faz mais 10 normais + diminui o peso novamente e faz mais 10 normais) Intervalo: 30s</div>
+      <div class="card">Panturrilha no leg horizontal 5x15 Intervalo: 30s</div>
+    </details>
+  </main>
+
+  <script>
+    // Toggle search bar
+    const searchBtn = document.getElementById("search-btn");
+    const searchContainer = document.querySelector(".search-container");
+    searchBtn.addEventListener("click", () => {
+      searchContainer.classList.toggle("active");
+      document.getElementById("search-input").focus();
+    });
+
+    // Filter treinos
+    const searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      document.querySelectorAll(".card").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(term) ? "block" : "none";
+      });
+    });
+
+    // Play/Pause video button
+    document.querySelectorAll(".video-container").forEach(container => {
+      const video = container.querySelector("video");
+      const btn = container.querySelector(".play-btn");
+      btn.addEventListener("click", () => {
+        if (video.paused) {
+          video.play();
+          btn.classList.add("hidden");
+        } else {
+          video.pause();
+          btn.classList.remove("hidden");
+        }
+      });
+      video.addEventListener("pause", () => btn.classList.remove("hidden"));
+      video.addEventListener("play", () => btn.classList.add("hidden"));
+    });
+
+    // Suave toggle (sem scroll brusco)
+    document.querySelectorAll("details").forEach(det => {
+      det.addEventListener("toggle", (e) => {
+        e.preventDefault();
+        if (det.open) {
+          det.removeAttribute("open");
+          setTimeout(() => det.setAttribute("open", ""), 10);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
