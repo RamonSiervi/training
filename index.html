@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Treinos - MFITPERSONAL</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background: #fdfdfd;
+      color: #222;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      background: linear-gradient(90deg,#333,#777);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    header h1:hover {
+      opacity: 0.7;
+    }
+    .search {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    main {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    .section {
+      margin-bottom: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .section-header {
+      padding: 1rem;
+      background: #fafafa;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+    .section-content {
+      display: none;
+      padding: 1rem;
+    }
+    .exercise {
+      margin-bottom: 1rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+    .exercise strong {
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    .video-container video {
+      width: 100%;
+      display: block;
+    }
+    .toggle-btn {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 onclick="window.open('dieta.html','_blank')">DIETA</h1>
+    <div class="search">🔍</div>
+  </header>
+  <main>
+    <div class="section">
+      <div class="section-header" onclick="toggleSection(this)">
+        Posterior <span class="toggle-btn">+</span>
+      </div>
+      <div class="section-content">
+        <div class="exercise">
+          <strong>Mesa flexora (aquecimento)</strong>
+          2x15/15 Intervalo: 30s
+        </div>
+        <div class="exercise">
+          <strong>Mesa flexora (As 6 primeiras segurando encima e as 6 ultimas normais)</strong>
+          3x12 Intervalo: 40s
+        </div>
+        <div class="exercise">
+          <strong>Cadeira flexora (As 6 primeiras segurando encima e as 6 ultimas normais)</strong>
+          1x12 Intervalo: 30s
+        </div>
+        <div class="exercise">
+          <strong>Flexora unilateral (As 6 primeiras segurando encima e as 6 ultimas normais)</strong>
+          1x16 Intervalo: 30s
+        </div>
+        <div class="exercise">
+          <strong>Stiff barra (ou halteres)</strong>
+          4x12/12/12/12 Intervalo: 50s
+          <div class="video-container">
+            <video src="https://musclewiki.com/media/uploads/classic-squat.mp4" controls></video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    function toggleSection(el) {
+      const content = el.nextElementSibling;
+      const btn = el.querySelector('.toggle-btn');
+      if(content.style.display === 'block') {
+        content.style.display = 'none';
+        btn.textContent = '+';
+      } else {
+        content.style.display = 'block';
+        btn.textContent = '−';
+      }
+    }
+  </script>
+</body>
+</html>
